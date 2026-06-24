@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 153" role="img" aria-label="Praxis Borderless Learning">
+  <rect width="300" height="153" fill="#d5e8ec"/>
+  <rect x="0" y="0" width="300" height="153" fill="#4aa0aa" opacity=".18"/>
+  <circle cx="64" cy="73" r="49" fill="#f1d3a7"/>
+  <rect x="110" y="18" width="145" height="95" rx="8" fill="#ffffff" opacity=".75"/>
+  <path d="M124 48h108M124 66h88M124 84h112" stroke="#6fa2ad" stroke-width="6"/>
+  <rect x="82" y="55" width="168" height="45" fill="#0f837f" opacity=".8"/>
+  <text x="119" y="84" font-family="Arial, Helvetica, sans-serif" font-size="35" fill="#153f42">praxis</text>
+  <text x="121" y="98" font-family="Arial, Helvetica, sans-serif" font-size="8" fill="#ffffff" letter-spacing="1">BORDERLESS LEARNING</text>
+</svg>

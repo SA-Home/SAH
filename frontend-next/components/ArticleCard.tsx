@@ -1,27 +1,33 @@
-type Props = {
-  title: string;
-  excerpt: string;
+import Image from "next/image";
+import Link from "next/link";
+import {
+  formatPostDate,
+  getFeaturedImage,
+  getPostAuthor,
+  getPostExcerpt,
+  getPostTitle,
+  getPrimaryCategory,
+  type WPPost,
+} from "@/lib/wordpress";
+
+type ArticleCardProps = {
+  post: WPPost;
+  className?: string;
+  imagePriority?: boolean;
 };
 
-export default function ArticleCard({
-  title,
-  excerpt,
-}: Props) {
-  return (
-    <article className="border rounded-lg p-6 hover:shadow-lg transition">
-      <h2
-        className="text-2xl font-semibold mb-3"
-        dangerouslySetInnerHTML={{
-          __html: title,
-        }}
-      />
+export default function ArticleCard({ post, className = "education-archive-card", imagePriority = false }: ArticleCardProps) {
+  const image = getFeaturedImage(post);
 
-      <div
-        className="text-gray-600"
-        dangerouslySetInnerHTML={{
-          __html: excerpt,
-        }}
-      />
-    </article>
+  return (
+    <Link className={className} href={`/articles/${post.slug}`}>
+      <Image src={image.src} alt={image.alt} width={image.width} height={image.height} priority={imagePriority} />
+      <span className="kicker">{getPrimaryCategory(post)}</span>
+      <h3>{getPostTitle(post)}</h3>
+      <p>{getPostExcerpt(post)}</p>
+      <strong>
+        by {getPostAuthor(post)} / {formatPostDate(post.date)}
+      </strong>
+    </Link>
   );
 }

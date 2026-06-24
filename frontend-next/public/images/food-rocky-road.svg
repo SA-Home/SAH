@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 560" role="img" aria-label="Rocky road dessert">
+  <rect width="760" height="560" fill="#c9c1b8"/>
+  <ellipse cx="390" cy="330" rx="250" ry="150" fill="#e8e2d8"/>
+  <g transform="rotate(-8 380 280)">
+    <rect x="210" y="190" width="330" height="170" rx="18" fill="#3a1c12"/>
+    <rect x="220" y="170" width="330" height="170" rx="18" fill="#553020"/>
+    <path d="M235 215h290M245 255h275M255 295h240" stroke="#28120b" stroke-width="12" opacity=".45"/>
+    <g fill="#f2e2c7">
+      <circle cx="270" cy="215" r="15"/><circle cx="335" cy="260" r="13"/><circle cx="440" cy="230" r="14"/><circle cx="506" cy="300" r="13"/>
+    </g>
+    <g fill="#aa6a3a">
+      <rect x="305" y="200" width="48" height="30" rx="8"/><rect x="405" y="280" width="54" height="28" rx="8"/><rect x="475" y="205" width="44" height="30" rx="8"/>
+    </g>
+  </g>
+</svg>
