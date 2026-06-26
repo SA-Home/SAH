@@ -10,13 +10,13 @@ export const metadata: Metadata = {
     template: "%s | SA Homeschooling & Beyond",
   },
   description:
-    "Practical education, parenting, development, directory, and magazine resources for South African homeschooling families.",
+    "Practical education, parenting, development, partner, and magazine resources for South African homeschooling families.",
   openGraph: {
     type: "website",
     siteName: "SA Homeschooling & Beyond",
     title: "SA Homeschooling & Beyond",
     description:
-      "Practical education, parenting, development, directory, and magazine resources for South African homeschooling families.",
+      "Practical education, parenting, development, partner, and magazine resources for South African homeschooling families.",
     url: siteUrl,
   },
   alternates: {

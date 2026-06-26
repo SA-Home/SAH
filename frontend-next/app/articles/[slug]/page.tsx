@@ -1,22 +1,26 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import AdBanner from "@/components/AdBanner";
+import AdSlot from "@/components/AdSlot";
 import ArticleCard from "@/components/ArticleCard";
+import AuthorAvatar from "@/components/AuthorAvatar";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import NewsletterForm from "@/components/NewsletterForm";
 import {
+  getAuthorBio,
   formatPostDate,
   getFeaturedImage,
   getPostAuthor,
   getPostBySlug,
+  getPostAuthorProfile,
+  getPostAuthorSlug,
   getPostCategories,
   getPostExcerpt,
   getPostTitle,
   getPosts,
   getPrimaryCategory,
-  stripHtml,
 } from "@/lib/wordpress";
 
 type ArticlePageProps = {
@@ -29,7 +33,8 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 
   if (!post) {
     return {
-      title: "Article Not Found",
+      title: "Article Temporarily Unavailable",
+      description: "This SA Homeschooling article could not be loaded right now.",
     };
   }
 
@@ -67,10 +72,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
 
-  if (!post) notFound();
+  if (!post) return <ArticleUnavailable slug={slug} />;
 
   const image = getFeaturedImage(post);
   const categories = getPostCategories(post);
+  const author = getPostAuthorProfile(post);
+  const authorSlug = getPostAuthorSlug(post);
+  const authorHref = authorSlug ? `/authors/${authorSlug}` : "#";
   const related = await getPosts({
     perPage: 3,
     categories: categories[0]?.id,
@@ -81,6 +89,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     <div className="recipe-page article-page">
       <Header />
 
+      <AdBanner placement="article-top" wrapClassName="ad-strip top-ad" />
+
       <section className="recipe-hero article-hero">
         <Image src={image.src} alt={image.alt} width={image.width} height={image.height} priority />
         <div className="recipe-hero-overlay">
@@ -88,7 +98,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <p>{categories.map((category) => category.name).join(", ") || getPrimaryCategory(post)}</p>
           <h1>{getPostTitle(post)}</h1>
           <span>
-            by <Link href="#">{getPostAuthor(post)}</Link> &nbsp;&nbsp; {formatPostDate(post.date)}
+            by <Link href={authorHref}>{getPostAuthor(post)}</Link> &nbsp;&nbsp; {formatPostDate(post.date)}
           </span>
         </div>
       </section>
@@ -101,19 +111,16 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
           <div dangerouslySetInnerHTML={{ __html: post.content.rendered }} />
 
-          <div className="article-ad-slot google-ad-slot google-ad-slot--leaderboard" aria-label="Advertisement" />
+          <AdSlot placement="article-inline" className="article-ad-slot" />
 
           <section className="author-bio">
-            <div className="author-avatar author-photo" aria-hidden="true" />
+            <AuthorAvatar author={author} />
             <div>
               <h2>
                 {getPostAuthor(post)} <span>Author</span>
               </h2>
-              <p>
-                {stripHtml(post._embedded?.author?.[0]?.description || "") ||
-                  `${getPostAuthor(post)} writes for SA Homeschooling & Beyond.`}
-              </p>
-              <Link href="#">More by {getPostAuthor(post)}</Link>
+              <p>{getAuthorBio(author)}</p>
+              <Link href={authorHref}>More by {getPostAuthor(post)}</Link>
             </div>
           </section>
 
@@ -135,7 +142,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </article>
 
         <aside className="recipe-sidebar article-sidebar">
-          <div className="article-side-ad google-ad-slot google-ad-slot--medium-rect" aria-label="Advertisement" />
+          <AdSlot placement="article-sidebar" className="article-side-ad" />
           <section className="latest-widget">
             <h2>Latest Stories</h2>
             {related.map((relatedPost) => (
@@ -145,8 +152,33 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             ))}
           </section>
           <NewsletterForm idPrefix="article" className="sidebar-newsletter labeled" />
-          <div className="article-side-ad google-ad-slot google-ad-slot--medium-rect" aria-label="Advertisement" />
+          <AdSlot placement="article-sidebar" className="article-side-ad" />
         </aside>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
+
+function ArticleUnavailable({ slug }: { slug: string }) {
+  return (
+    <div className="recipe-page article-page">
+      <Header />
+
+      <AdBanner placement="article-top" wrapClassName="ad-strip top-ad" />
+
+      <main className="recipe-layout article-layout">
+        <article className="recipe-article article-body">
+          <div className="intro-box">
+            <p>
+              This article is temporarily unavailable while the WordPress connection catches up. Please refresh shortly
+              or browse the latest articles.
+            </p>
+          </div>
+          <Link href="/articles">Back to articles</Link>
+          <NewsletterForm idPrefix={`article-unavailable-${slug}`} className="sidebar-newsletter labeled" />
+        </article>
       </main>
 
       <Footer />

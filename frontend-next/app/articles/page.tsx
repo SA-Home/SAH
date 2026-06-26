@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import AdBanner from "@/components/AdBanner";
 import ArticleCard from "@/components/ArticleCard";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
@@ -39,14 +40,11 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
   const { posts, totalPages } = await getPaginatedPosts({ page, perPage: 12 });
   const lead = posts[0];
   const secondary = posts.slice(1, 4);
-  const topStories = posts.slice(4, 9);
   const weekly = posts.slice(9, 12);
 
   return (
     <div className="education-page">
-      <div className="ad-strip top-ad" aria-label="Advertisement">
-        <div id="ad-education-top" className="google-ad-slot google-ad-slot--leaderboard-sm" data-ad-unit="newspack_education_top" />
-      </div>
+      <AdBanner placement="category-top" wrapClassName="ad-strip top-ad" />
 
       <Header />
 
@@ -100,41 +98,29 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
               </div>
             </div>
 
-            <aside className="top-stories" aria-labelledby="education-top-stories">
-              <h2 id="education-top-stories">Top stories</h2>
-              {topStories.map((post) => {
-                const image = getFeaturedImage(post);
-
-                return (
-                  <Link className="story-row" href={`/articles/${post.slug}`} key={post.id}>
-                    <Image src={image.src} alt="" width={120} height={90} />
-                    <div>
-                      <h3>{getPostTitle(post)}</h3>
-                      <p>by {getPostAuthor(post)}</p>
-                    </div>
-                  </Link>
-                );
-              })}
-            </aside>
           </section>
         ) : null}
 
         <section className="weekly-section education-weekly-modern" aria-labelledby="weekly-title">
           <h2 id="weekly-title">Weekly Stories</h2>
-          {weekly.map((post) => {
-            const image = getFeaturedImage(post);
+          {weekly.length ? (
+            weekly.map((post) => {
+              const image = getFeaturedImage(post);
 
-            return (
-              <article className="wide-story education-wide-story" key={post.id}>
-                <Image src={image.src} alt={image.alt} width={360} height={220} />
-                <div>
-                  <span>{getPrimaryCategory(post)}</span>
-                  <h3>{getPostTitle(post)}</h3>
-                  <p>by {getPostAuthor(post)}</p>
-                </div>
-              </article>
-            );
-          })}
+              return (
+                <article className="wide-story education-wide-story" key={post.id}>
+                  <Image src={image.src} alt={image.alt} width={360} height={220} />
+                  <div>
+                    <span>{getPrimaryCategory(post)}</span>
+                    <h3>{getPostTitle(post)}</h3>
+                    <p>by {getPostAuthor(post)}</p>
+                  </div>
+                </article>
+              );
+            })
+          ) : (
+            <p className="archive-loading">Weekly stories are temporarily unavailable. Please check back soon.</p>
+          )}
         </section>
 
         <section className="education-content-grid education-featured-modern">
@@ -142,20 +128,24 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
             <div className="section-rule" />
             <h2 id="featured-title">Featured</h2>
             <div className="post-list">
-              {posts.slice(0, 3).map((post) => {
-                const image = getFeaturedImage(post);
+              {posts.length ? (
+                posts.slice(0, 3).map((post) => {
+                  const image = getFeaturedImage(post);
 
-                return (
-                  <Link className="post-row" href={`/articles/${post.slug}`} key={post.id}>
-                    <Image src={image.src} alt="" width={180} height={130} />
-                    <div>
-                      <h3>{getPostTitle(post)}</h3>
-                      <p>{getPostExcerpt(post)}</p>
-                      <span className="byline">by {getPostAuthor(post)}</span>
-                    </div>
-                  </Link>
-                );
-              })}
+                  return (
+                    <Link className="post-row" href={`/articles/${post.slug}`} key={post.id}>
+                      <Image src={image.src} alt="" width={180} height={130} />
+                      <div>
+                        <h3>{getPostTitle(post)}</h3>
+                        <p>{getPostExcerpt(post)}</p>
+                        <span className="byline">by {getPostAuthor(post)}</span>
+                      </div>
+                    </Link>
+                  );
+                })
+              ) : (
+                <p className="archive-loading">Featured articles are temporarily unavailable.</p>
+              )}
             </div>
           </section>
 
@@ -174,15 +164,16 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
               <ArticleCard post={post} key={post.id} />
             ))}
           </div>
+          {!posts.length ? (
+            <p className="archive-loading">Articles could not be loaded right now. Please check back soon.</p>
+          ) : null}
           <nav className="post-navigation" aria-label="Article pagination">
             {page > 1 ? <Link href={`/articles?page=${page - 1}`}>Previous page</Link> : <span />}
             {page < totalPages ? <Link href={`/articles?page=${page + 1}`}>Next page</Link> : <span />}
           </nav>
         </section>
 
-        <div className="final-ad-wrap education-final-ad" aria-label="Advertisement">
-          <div id="ad-education-footer" className="google-ad-slot google-ad-slot--wide-banner" data-ad-unit="newspack_education_footer" />
-        </div>
+        <AdBanner placement="home-bottom" wrapClassName="final-ad-wrap education-final-ad" variant="google-ad-slot--wide-banner" />
       </main>
 
       <Footer />

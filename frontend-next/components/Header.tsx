@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
@@ -9,7 +10,7 @@ const searchItems = [
   { title: "Development", url: "/category/development", category: "Development" },
   { title: "Parenting", url: "/category/parenting", category: "Parenting" },
   { title: "Cooking & Bonding", url: "/category/cooking-bonding", category: "Parenting" },
-  { title: "Directory", url: "/directory", category: "Directory" },
+  { title: "Partners", url: "/directory", category: "Partners" },
   { title: "Magazines", url: "/magazines", category: "Magazines" },
   { title: "Newsletter Subscribe", url: "/subscribe", category: "Subscribe" },
 ];
@@ -41,9 +42,14 @@ export default function Header() {
       <header className="site-header">
         <div className="header-inner">
           <Link className="brand" href="/" aria-label="SA Homeschooling home">
-            <span className="brand-small">sa</span>
-            <span className="brand-home">Home</span>
-            <span className="brand-school">schooling</span>
+            <Image
+              className="brand-logo"
+              src="/images/logo-transparent.png"
+              alt="SA Home & School"
+              width={1600}
+              height={533}
+              priority
+            />
           </Link>
 
           <button
@@ -82,12 +88,11 @@ export default function Header() {
                 Parenting
               </Link>
               <div className="nav-dropdown-menu">
-                <Link href="/category/parenting">Parenting</Link>
                 <Link href="/category/cooking-bonding">Cooking &amp; Bonding</Link>
               </div>
             </div>
             <Link className={pathname === "/directory" ? "active" : undefined} href="/directory">
-              Directory
+              Partners
             </Link>
             <Link className={pathname === "/magazines" ? "active" : undefined} href="/magazines">
               Magazines

@@ -12,12 +12,7 @@ export default function FeaturedPosts({ posts }: FeaturedPostsProps) {
   if (!featured.length) return null;
 
   return (
-    <section className="home-section home-section--white" aria-labelledby="latest-title">
-      <div className="section-heading">
-        <span className="kicker">Featured</span>
-        <h2 id="latest-title">Essential stories for homeschool families</h2>
-      </div>
-
+    <section className="home-section home-section--white">
       <div className="home-feature-mosaic">
         {featured.map((post, index) => {
           const image = getFeaturedImage(post);

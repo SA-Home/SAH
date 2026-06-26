@@ -1,20 +1,21 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import AdSlot from "@/components/AdSlot";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import NewsletterForm from "@/components/NewsletterForm";
 import { getPosts, getPostTitle } from "@/lib/wordpress";
 
 export const metadata: Metadata = {
-  title: "Directory",
-  description: "Find learning providers, resource centres, study guides, and education services for homeschool families.",
+  title: "Partners",
+  description: "Find learning providers, resource centres, study guides, and education partners for homeschool families.",
   alternates: {
     canonical: "/directory",
   },
   openGraph: {
-    title: "Directory | SA Homeschooling & Beyond",
-    description: "Find learning providers, resource centres, study guides, and education services for homeschool families.",
+    title: "Partners | SA Homeschooling & Beyond",
+    description: "Find learning providers, resource centres, study guides, and education partners for homeschool families.",
     url: "/directory",
   },
 };
@@ -67,12 +68,12 @@ export default async function DirectoryPage() {
           priority
         />
         <div>
-          <h1>Directory</h1>
+          <h1>Partners</h1>
         </div>
       </section>
 
       <main className="directory-layout">
-        <section className="directory-list" aria-label="Directory listings">
+        <section className="directory-list" aria-label="Partner listings">
           {listings.map((listing) => (
             <article className="directory-card" key={listing.name}>
               <Image className="directory-logo" src={listing.logo} alt={`${listing.name} logo`} width={220} height={120} />
@@ -83,17 +84,19 @@ export default async function DirectoryPage() {
         </section>
 
         <aside className="directory-sidebar">
-          <div className="directory-ad" aria-label="Advertisement">
-            <div id="ad-directory-sidebar" className="google-ad-slot google-ad-slot--directory-rect" data-ad-unit="newspack_directory_sidebar" />
-          </div>
+          <AdSlot placement="directory-top" wrapClassName="directory-ad" />
 
           <section className="latest-widget">
             <h2>Latest Stories</h2>
-            {latestPosts.map((post) => (
-              <Link href={`/articles/${post.slug}`} key={post.id}>
-                {getPostTitle(post)}
-              </Link>
-            ))}
+            {latestPosts.length ? (
+              latestPosts.map((post) => (
+                <Link href={`/articles/${post.slug}`} key={post.id}>
+                  {getPostTitle(post)}
+                </Link>
+              ))
+            ) : (
+              <p>Latest stories are temporarily unavailable.</p>
+            )}
           </section>
 
           <NewsletterForm idPrefix="directory" className="sidebar-newsletter labeled" />
