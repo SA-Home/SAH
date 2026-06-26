@@ -37,18 +37,21 @@ const listings = [
     name: "Conquesta Academic Annual School Olympiads",
     description:
       "Annual multiple choice Olympiads for grades 1-9 students across South Africa, Namibia, Botswana and eSwatini.",
+    website: "https://www.conquestaolympiads.com/",
   },
   {
     logo: "/images/directory-answer-series.svg",
     name: "The Answer Series",
     description:
       "South Africa's leading provider of study guides, supporting learners, parents, teachers, and tutors for more than 50 years.",
+    website: "https://www.theanswer.co.za/",
   },
   {
     logo: "/images/directory-cambridge.svg",
     name: "Cambridge",
     description:
       "Trusted learning resources that bring together local curriculum expertise and international best practice for homeschoolers.",
+    website: "https://www.cambridge.org/education",
   },
 ];
 
@@ -79,6 +82,17 @@ export default async function DirectoryPage() {
               <Image className="directory-logo" src={listing.logo} alt={`${listing.name} logo`} width={220} height={120} />
               <h2>{listing.name}</h2>
               <p>{listing.description}</p>
+              {listing.website ? (
+                <a
+                  className="directory-website-link"
+                  href={listing.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Visit ${listing.name} official website`}
+                >
+                  Visit Website
+                </a>
+              ) : null}
             </article>
           ))}
         </section>

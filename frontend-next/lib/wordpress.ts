@@ -136,6 +136,7 @@ type GetPostsOptions = {
   categories?: number | number[];
   exclude?: number | number[];
   search?: string;
+  embed?: string | number;
 };
 
 const revalidate = 3600;
@@ -201,6 +202,13 @@ const fallbackAds: Record<AdPlacement, SiteAd> = {
     placement: "directory-top",
     dataUnit: "newspack_directory_sidebar",
     sizeClass: "google-ad-slot--directory-rect",
+    html: `
+      <div class="directory-ad-placeholder">
+        <span>Advertisement</span>
+        <strong>Reach homeschool families</strong>
+        <p>Showcase your learning resources, services, or events to South African parents.</p>
+      </div>
+    `,
   },
   "subscribe-bottom": {
     id: "ad-newsletter-leaderboard",
@@ -298,7 +306,7 @@ function listParam(value?: number | number[]) {
 export async function getPosts(options: GetPostsOptions = {}) {
   try {
     return await wpFetch<WPPost[]>("/wp/v2/posts", {
-      _embed: 1,
+      _embed: options.embed ?? 1,
       per_page: options.perPage ?? 10,
       page: options.page ?? 1,
       categories: listParam(options.categories),
@@ -645,8 +653,8 @@ async function getMagazineWordPressPage() {
 
 async function getMagazineRelatedPosts() {
   const [magazineResult, issueResult] = await Promise.allSettled([
-    getPosts({ perPage: 20, search: "magazine" }),
-    getPosts({ perPage: 20, search: "issue" }),
+    getPosts({ perPage: 20, search: "magazine", embed: "wp:featuredmedia" }),
+    getPosts({ perPage: 20, search: "issue", embed: "wp:featuredmedia" }),
   ]);
   const posts = [
     ...(magazineResult.status === "fulfilled" ? magazineResult.value : []),

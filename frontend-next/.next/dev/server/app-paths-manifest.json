@@ -1,0 +1,10 @@
+{
+  "/api/magazine-pdf/route": "app/api/magazine-pdf/route.js",
+  "/articles/page": "app/articles/page.js",
+  "/category/[slug]/page": "app/category/[slug]/page.js",
+  "/directory/page": "app/directory/page.js",
+  "/magazines/embed/[slug]/page": "app/magazines/embed/[slug]/page.js",
+  "/magazines/page": "app/magazines/page.js",
+  "/page": "app/page.js",
+  "/subscribe/page": "app/subscribe/page.js"
+}
