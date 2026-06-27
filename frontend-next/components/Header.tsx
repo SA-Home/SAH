@@ -63,41 +63,43 @@ export default function Header() {
           </button>
 
           <nav className={`site-nav${menuOpen ? " open" : ""}`} aria-label="Main navigation">
-            <Link className={pathname === "/" ? "active" : undefined} href="/">
+            <Link className={pathname === "/" ? "active" : undefined} href="/" prefetch>
               Home
             </Link>
-            <Link className={pathname.startsWith("/articles") ? "active" : undefined} href="/articles">
+            <Link className={pathname.startsWith("/articles") ? "active" : undefined} href="/articles" prefetch>
               Education
             </Link>
             <div className="nav-dropdown">
               <Link
                 className={`nav-parent${pathname.includes("/category/development") ? " active" : ""}`}
                 href="/category/development"
+                prefetch
               >
                 Development
               </Link>
               <div className="nav-dropdown-menu">
-                <Link href="/category/ask-dalena">Ask Dalena</Link>
+                <Link href="/category/ask-dalena" prefetch>Ask Dalena</Link>
               </div>
             </div>
             <div className="nav-dropdown">
               <Link
                 className={`nav-parent${pathname.includes("/category/parenting") ? " active" : ""}`}
                 href="/category/parenting"
+                prefetch
               >
                 Parenting
               </Link>
               <div className="nav-dropdown-menu">
-                <Link href="/category/cooking-bonding">Cooking &amp; Bonding</Link>
+                <Link href="/category/cooking-bonding" prefetch>Cooking &amp; Bonding</Link>
               </div>
             </div>
-            <Link className={pathname === "/directory" ? "active" : undefined} href="/directory">
+            <Link className={pathname === "/directory" ? "active" : undefined} href="/directory" prefetch>
               Partners
             </Link>
-            <Link className={pathname === "/magazines" ? "active" : undefined} href="/magazines">
+            <Link className={pathname === "/magazines" ? "active" : undefined} href="/magazines" prefetch>
               Magazines
             </Link>
-            <Link className={pathname === "/subscribe" ? "active" : undefined} href="/subscribe">
+            <Link className={pathname === "/subscribe" ? "active" : undefined} href="/subscribe" prefetch>
               Subscribe
             </Link>
             <button className="search-link" type="button" aria-label="Search" onClick={() => setSearchOpen(true)}>

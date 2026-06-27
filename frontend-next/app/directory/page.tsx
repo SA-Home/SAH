@@ -72,6 +72,10 @@ export default async function DirectoryPage() {
         />
         <div>
           <h1>Partners</h1>
+          <p className="directory-hero-subtitle">People we partner with</p>
+          <p className="directory-hero-copy">
+            Explore trusted education providers, learning resources, and support services for homeschool families.
+          </p>
         </div>
       </section>
 

@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { MagazineIssue } from "@/lib/wordpress";
 
 type MagazineViewerProps = {
@@ -6,32 +7,42 @@ type MagazineViewerProps = {
 
 export default function MagazineViewer({ issue }: MagazineViewerProps) {
   const viewerUrl = issue.embedUrl || issue.pdfUrl;
+  const cover = issue.coverImage;
+  const coverStyle = cover
+    ? ({
+        "--magazine-cover-image": `url("${cover.src}")`,
+      } as CSSProperties)
+    : undefined;
+  const preview = (
+    <>
+      <div className="magazine-preview__book" style={coverStyle}>
+        <div
+          className={`magazine-preview__cover${cover ? "" : " magazine-preview__cover--fallback"}`}
+          role="img"
+          aria-label={cover?.alt ?? `${issue.title} cover`}
+        >
+          <span>SA Homeschooling &amp; Beyond</span>
+          <strong>{issue.title}</strong>
+        </div>
+        <span className="magazine-flip-page magazine-flip-page--one" aria-hidden="true" />
+        <span className="magazine-flip-page magazine-flip-page--two" aria-hidden="true" />
+        <span className="magazine-flip-page magazine-flip-page--three" aria-hidden="true" />
+      </div>
+      <span className="magazine-preview-fallback">{issue.title}</span>
+    </>
+  );
 
   if (!viewerUrl) {
     return (
       <div className="magazine-preview">
-        <span className="magazine-preview-fallback">{issue.title}</span>
-      </div>
-    );
-  }
-
-  if (issue.dflipOption && issue.embedUrl) {
-    return (
-      <div className="magazine-preview magazine-preview--flipbook">
-        <iframe src={issue.embedUrl} title={`${issue.title} flipbook preview`} loading="lazy" />
-        <span className="magazine-preview-fallback">{issue.title}</span>
+        {preview}
       </div>
     );
   }
 
   return (
     <a className="magazine-preview magazine-open" href={viewerUrl} aria-label={`Open ${issue.title}`} target="_blank" rel="noreferrer">
-      <iframe
-        src={`${viewerUrl}#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
-        title={`${issue.title} cover preview`}
-        loading="lazy"
-      />
-      <span className="magazine-preview-fallback">{issue.title}</span>
+      {preview}
     </a>
   );
 }

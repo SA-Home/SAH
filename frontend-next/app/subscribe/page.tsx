@@ -31,7 +31,6 @@ export default function SubscribePage() {
           priority
         />
         <div>
-          <span className="kicker">Newsletter</span>
           <h1>Fresh homeschool ideas in your inbox</h1>
           <p>Get practical education, parenting, and development stories for South African homeschool families.</p>
         </div>

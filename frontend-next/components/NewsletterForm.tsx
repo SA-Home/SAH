@@ -29,12 +29,18 @@ export default function NewsletterForm({
     <form className={className} onSubmit={onSubmit}>
       {showKicker ? <span className="kicker">Newsletter</span> : <div className="section-rule" />}
       <Heading>{title}</Heading>
-      <label htmlFor={`${idPrefix}-name`}>Name</label>
-      <input id={`${idPrefix}-name`} name="first-name" type="text" placeholder="Name" />
-      <label htmlFor={`${idPrefix}-last-name`}>Last name</label>
-      <input id={`${idPrefix}-last-name`} name="last-name" type="text" placeholder="Last name" />
-      <label htmlFor={`${idPrefix}-email`}>Email address:</label>
-      <input id={`${idPrefix}-email`} name="email" type="email" placeholder="Your email address" required />
+      <div className="field-row field-row--first-name">
+        <label htmlFor={`${idPrefix}-name`}>Name</label>
+        <input id={`${idPrefix}-name`} name="first-name" type="text" placeholder="Name" />
+      </div>
+      <div className="field-row field-row--last-name">
+        <label htmlFor={`${idPrefix}-last-name`}>Last name</label>
+        <input id={`${idPrefix}-last-name`} name="last-name" type="text" placeholder="Last name" />
+      </div>
+      <div className="field-row field-row--email">
+        <label htmlFor={`${idPrefix}-email`}>Email address:</label>
+        <input id={`${idPrefix}-email`} name="email" type="email" placeholder="Your email address" required />
+      </div>
       <button className="signup-button" type="submit">
         Sign up
       </button>

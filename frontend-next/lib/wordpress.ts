@@ -1,3 +1,5 @@
+import { unstable_cache } from "next/cache";
+
 const WP_API = process.env.NEXT_PUBLIC_WP_API_URL ?? "https://sahomeschooling.com/wp-json";
 
 export type WPAuthor = {
@@ -97,6 +99,9 @@ export type DFlipOption = {
   wpOptions?: string;
   thumb?: string;
   thumbnail?: string;
+  cover?: string;
+  coverImage?: string;
+  texture?: string;
   title?: string;
   [key: string]: unknown;
 };
@@ -140,6 +145,94 @@ type GetPostsOptions = {
 };
 
 const revalidate = 3600;
+const wpRequestTimeoutMs = 8000;
+
+const magazineFallbackCovers = [
+  {
+    src: "/images/photo-homeschool-family-table.png",
+    alt: "Homeschool family working together at a table",
+    width: 1200,
+    height: 800,
+    keywords: ["family", "home", "homeschool", "parent", "children"],
+  },
+  {
+    src: "/images/photo-online-learning-family.png",
+    alt: "Family using online learning resources",
+    width: 1200,
+    height: 800,
+    keywords: ["online", "digital", "learning", "school"],
+  },
+  {
+    src: "/images/photo-passion-learning-tools.png",
+    alt: "Colourful learning tools and school supplies",
+    width: 1200,
+    height: 800,
+    keywords: ["learning", "tools", "resources", "guide"],
+  },
+  {
+    src: "/images/photo-learning-materials.jpg",
+    alt: "Learning materials arranged on a desk",
+    width: 1200,
+    height: 800,
+    keywords: ["materials", "books", "study", "guide"],
+  },
+  {
+    src: "/images/photo-library.jpg",
+    alt: "Library shelves with study books",
+    width: 1200,
+    height: 800,
+    keywords: ["books", "library", "reading"],
+  },
+  {
+    src: "/images/photo-studying.jpg",
+    alt: "Student studying with notes",
+    width: 1200,
+    height: 800,
+    keywords: ["study", "exam", "matric"],
+  },
+  {
+    src: "/images/photo-maths.jpg",
+    alt: "Maths learning materials on a desk",
+    width: 1200,
+    height: 800,
+    keywords: ["maths", "exam", "study"],
+  },
+  {
+    src: "/images/photo-tutor.jpg",
+    alt: "Tutor helping a learner",
+    width: 1200,
+    height: 800,
+    keywords: ["tutor", "teacher", "support"],
+  },
+  {
+    src: "/images/photo-classroom.jpg",
+    alt: "Classroom learning space",
+    width: 1200,
+    height: 800,
+    keywords: ["classroom", "school", "education"],
+  },
+  {
+    src: "/images/photo-desk-supplies.jpg",
+    alt: "Desk with homeschool supplies",
+    width: 1200,
+    height: 800,
+    keywords: ["desk", "supplies", "planning"],
+  },
+  {
+    src: "/images/photo-leadership-booklet.jpg",
+    alt: "Leadership booklet and study notes",
+    width: 1200,
+    height: 800,
+    keywords: ["leadership", "development", "guide"],
+  },
+  {
+    src: "/images/photo-homeschool-success.png",
+    alt: "Homeschool success sign and study items",
+    width: 1200,
+    height: 800,
+    keywords: ["success", "homeschool", "motivation"],
+  },
+];
 
 const categoryAliases: Record<string, string> = {
   education: "newspack-featured",
@@ -250,6 +343,42 @@ function logWordPressError(context: string, error: unknown) {
   console.warn(`[wordpress] ${context}: ${getErrorMessage(error)}`);
 }
 
+const fetchWordPressJson = unstable_cache(
+  async (url: string) => {
+    const res = await fetch(url, {
+      signal: AbortSignal.timeout(wpRequestTimeoutMs),
+    });
+
+    if (!res.ok) {
+      throw new Error(`WordPress request failed (${res.status} ${res.statusText}): ${url}`);
+    }
+
+    return res.json() as Promise<unknown>;
+  },
+  ["wordpress-json"],
+  { revalidate },
+);
+
+const fetchWordPressPaginated = unstable_cache(
+  async (url: string) => {
+    const res = await fetch(url, {
+      signal: AbortSignal.timeout(wpRequestTimeoutMs),
+    });
+
+    if (!res.ok) {
+      throw new Error(`WordPress request failed (${res.status} ${res.statusText}): ${url}`);
+    }
+
+    return {
+      posts: (await res.json()) as WPPost[],
+      total: Number(res.headers.get("x-wp-total") ?? 0),
+      totalPages: Number(res.headers.get("x-wp-totalpages") ?? 0),
+    };
+  },
+  ["wordpress-paginated"],
+  { revalidate },
+);
+
 function emptyPaginatedPosts(): PaginatedPosts {
   return {
     posts: [],
@@ -260,19 +389,12 @@ function emptyPaginatedPosts(): PaginatedPosts {
 
 async function wpFetch<T>(path: string, params?: Record<string, string | number | undefined>) {
   const url = apiUrl(path, params);
-  let res: Response;
 
   try {
-    res = await fetch(url, { next: { revalidate } });
+    return (await fetchWordPressJson(url)) as T;
   } catch (error) {
     throw new Error(`WordPress request failed: ${url} (${getErrorMessage(error)})`);
   }
-
-  if (!res.ok) {
-    throw new Error(`WordPress request failed (${res.status} ${res.statusText}): ${url}`);
-  }
-
-  return res.json() as Promise<T>;
 }
 
 async function wpFetchPaginated(
@@ -280,23 +402,12 @@ async function wpFetchPaginated(
   params?: Record<string, string | number | undefined>,
 ): Promise<PaginatedPosts> {
   const url = apiUrl(path, params);
-  let res: Response;
 
   try {
-    res = await fetch(url, { next: { revalidate } });
+    return await fetchWordPressPaginated(url);
   } catch (error) {
     throw new Error(`WordPress request failed: ${url} (${getErrorMessage(error)})`);
   }
-
-  if (!res.ok) {
-    throw new Error(`WordPress request failed (${res.status} ${res.statusText}): ${url}`);
-  }
-
-  return {
-    posts: (await res.json()) as WPPost[],
-    total: Number(res.headers.get("x-wp-total") ?? 0),
-    totalPages: Number(res.headers.get("x-wp-totalpages") ?? 0),
-  };
 }
 
 function listParam(value?: number | number[]) {
@@ -454,6 +565,7 @@ export async function getMagazinePosts() {
 
   const issues = embedIssues.map((issue) => {
     const matchedPost = findMagazinePost(issue, posts);
+    const postCover = matchedPost ? getFeaturedImage(matchedPost) : undefined;
 
     if (matchedPost) usedPostIds.add(matchedPost.id);
 
@@ -461,7 +573,7 @@ export async function getMagazinePosts() {
       ...issue,
       title: matchedPost ? getPostTitle(matchedPost) : issue.title,
       description: matchedPost ? getPostExcerpt(matchedPost) : issue.description,
-      coverImage: matchedPost ? getFeaturedImage(matchedPost) : issue.coverImage,
+      coverImage: getMagazineCoverImage(issue.coverImage, postCover),
       sourcePost: matchedPost,
     };
   });
@@ -479,12 +591,12 @@ export async function getMagazinePosts() {
         description: getPostExcerpt(post),
         pdfUrl,
         embedUrl: pdfUrl,
-        coverImage: getFeaturedImage(post),
+        coverImage: getMagazineCoverImage(undefined, getFeaturedImage(post)),
         sourcePost: post,
       });
     });
 
-  return dedupeMagazineIssues(issues);
+  return applyMagazineFallbackCovers(dedupeMagazineIssues(issues));
 }
 
 export async function getMagazineBySlug(slug: string) {
@@ -596,6 +708,53 @@ export function getFeaturedImage(post: WPPost) {
   };
 }
 
+function getMagazineCoverImage(primary?: MagazineIssue["coverImage"], fallback?: MagazineIssue["coverImage"]) {
+  if (primary && !isPlaceholderImage(primary.src)) return primary;
+  if (fallback && !isPlaceholderImage(fallback.src)) return fallback;
+
+  return undefined;
+}
+
+function isPlaceholderImage(src?: string) {
+  return !src || src.includes("/images/hero-placeholder.svg");
+}
+
+function applyMagazineFallbackCovers(issues: MagazineIssue[]) {
+  const usedFallbacks = new Set<string>();
+
+  return issues.map((issue) => {
+    if (issue.coverImage && !isPlaceholderImage(issue.coverImage.src)) return issue;
+
+    const cover = pickMagazineFallbackCover(issue, usedFallbacks);
+
+    return {
+      ...issue,
+      coverImage: {
+        src: cover.src,
+        alt: cover.alt,
+        width: cover.width,
+        height: cover.height,
+      },
+    };
+  });
+}
+
+function pickMagazineFallbackCover(issue: MagazineIssue, usedFallbacks: Set<string>) {
+  const haystack = normalizeText(`${issue.title} ${issue.slug} ${issue.description}`);
+  const unused = magazineFallbackCovers.filter((cover) => !usedFallbacks.has(cover.src));
+  const pool = unused.length ? unused : magazineFallbackCovers;
+  const keywordMatch = pool.find((cover) => cover.keywords.some((keyword) => haystack.includes(keyword)));
+  const issueNumber = Number(issue.issueNumber ?? issue.slug.match(/issue-(\d+)/)?.[1] ?? issue.id.replace(/\D/g, ""));
+  const fallback = keywordMatch ?? pool[Math.abs(Number.isFinite(issueNumber) ? issueNumber : hashString(issue.slug)) % pool.length];
+
+  usedFallbacks.add(fallback.src);
+  return fallback;
+}
+
+function hashString(value: string) {
+  return Array.from(value).reduce((hash, char) => hash + char.charCodeAt(0), 0);
+}
+
 export function formatPostDate(date: string) {
   return new Intl.DateTimeFormat("en-ZA", {
     day: "numeric",
@@ -691,7 +850,7 @@ function parseDFlipIssues(content: string): MagazineIssue[] {
       const title = option?.title && option.title !== slug ? decodeHtml(option.title) : titleFromSlug(slug);
       const description =
         paragraphs[index] || `${title} is available to read online as part of the SA Homeschooling & Beyond archive.`;
-      const coverUrl = normalizePublicUrl(option?.thumb || option?.thumbnail);
+      const coverUrl = normalizePublicUrl(option?.thumb || option?.thumbnail || option?.cover || option?.coverImage || option?.texture);
 
       return {
         id: String(option?.id ?? slug),

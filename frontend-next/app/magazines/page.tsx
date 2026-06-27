@@ -36,7 +36,6 @@ export default async function MagazinesPage() {
           priority
         />
         <div>
-          <span className="kicker">Magazines</span>
           <h1>Explore Our Magazines</h1>
           <p>
             Read SA Homeschooling &amp; Beyond issues directly from the website, with magazine previews and built-in page
