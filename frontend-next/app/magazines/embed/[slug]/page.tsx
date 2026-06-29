@@ -76,7 +76,7 @@ export default async function MagazineEmbedPage({ params }: MagazineEmbedPagePro
     ...issue.dflipOption,
     id: issue.dflipOption?.id ?? dflipId,
     slug: issue.dflipOption?.slug ?? issue.slug,
-    source: issue.pdfUrl ? `/api/magazine-pdf?url=${encodeURIComponent(issue.pdfUrl)}` : issue.dflipOption?.source,
+    source: issue.pdfUrl ? getPdfViewerSource(issue.pdfUrl) : issue.dflipOption?.source,
     wpOptions: "true",
   };
 
@@ -127,6 +127,10 @@ export default async function MagazineEmbedPage({ params }: MagazineEmbedPagePro
 
 function sanitizeDFlipId(value: string) {
   return value.replace(/[^a-zA-Z0-9_]/g, "_");
+}
+
+function getPdfViewerSource(pdfUrl: string) {
+  return pdfUrl.startsWith("/") ? pdfUrl : `/api/magazine-pdf?url=${encodeURIComponent(pdfUrl)}`;
 }
 
 function toScriptValue(value: unknown) {
