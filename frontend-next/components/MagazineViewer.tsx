@@ -21,8 +21,12 @@ export default function MagazineViewer({ issue }: MagazineViewerProps) {
           role="img"
           aria-label={cover?.alt ?? `${issue.title} cover`}
         >
-          <span>SA Homeschooling &amp; Beyond</span>
-          <strong>{issue.title}</strong>
+          {!cover ? (
+            <>
+              <span>SA Homeschooling &amp; Beyond</span>
+              <strong>{issue.title}</strong>
+            </>
+          ) : null}
         </div>
         <span className="magazine-flip-page magazine-flip-page--one" aria-hidden="true" />
         <span className="magazine-flip-page magazine-flip-page--two" aria-hidden="true" />

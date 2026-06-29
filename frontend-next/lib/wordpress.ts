@@ -147,6 +147,233 @@ type GetPostsOptions = {
 const revalidate = 3600;
 const wpRequestTimeoutMs = 8000;
 
+const localMagazineCovers = {
+  "sa-homeschooling-autumn-2024": {
+    src: "/magazine-covers/sa-homeschooling-autumn-2024.jpg",
+    alt: "SA Homeschooling & Beyond Autumn 2024 cover",
+    width: 893,
+    height: 1263,
+  },
+  "sa-homeschooling-december-2025": {
+    src: "/magazine-covers/sa-homeschooling-december-2025.jpg",
+    alt: "SA Homeschooling & Beyond December 2025 cover",
+    width: 893,
+    height: 1263,
+  },
+  "sa-homeschooling-issue-1": {
+    src: "/magazine-covers/sa-homeschooling-issue-1.jpg",
+    alt: "SA Homeschooling & Beyond Issue 1 cover",
+    width: 974,
+    height: 1263,
+  },
+  "sa-homeschooling-issue-1-2025": {
+    src: "/magazine-covers/sa-homeschooling-issue-1-2025.jpg",
+    alt: "SA Homeschooling & Beyond Issue 1 2025 cover",
+    width: 893,
+    height: 1263,
+  },
+  "sa-homeschooling-issue-11-spring-2022": {
+    src: "/magazine-covers/sa-homeschooling-issue-11-spring-2022.jpg",
+    alt: "SA Homeschooling & Beyond Issue 11 Spring 2022 cover",
+    width: 974,
+    height: 1263,
+  },
+  "sa-homeschooling-issue-12-summer-2022": {
+    src: "/magazine-covers/sa-homeschooling-issue-12-summer-2022.jpg",
+    alt: "SA Homeschooling & Beyond Issue 12 Summer 2022 cover",
+    width: 893,
+    height: 1263,
+  },
+  "sa-homeschooling-issue-13-autumn-2023": {
+    src: "/magazine-covers/sa-homeschooling-issue-13-autumn-2023.jpg",
+    alt: "SA Homeschooling & Beyond Issue 13 Autumn 2023 cover",
+    width: 893,
+    height: 1263,
+  },
+  "sa-homeschooling-issue-14-winter-2023": {
+    src: "/magazine-covers/sa-homeschooling-issue-14-winter-2023.jpg",
+    alt: "SA Homeschooling & Beyond Issue 14 Winter 2023 cover",
+    width: 893,
+    height: 1263,
+  },
+  "sa-homeschooling-issue-15-spring-2023": {
+    src: "/magazine-covers/sa-homeschooling-issue-15-spring-2023.jpg",
+    alt: "SA Homeschooling & Beyond Issue 15 Spring 2023 cover",
+    width: 893,
+    height: 1263,
+  },
+  "sa-homeschooling-issue-16-summer-2023": {
+    src: "/magazine-covers/sa-homeschooling-issue-16-summer-2023.jpg",
+    alt: "SA Homeschooling & Beyond Issue 16 Summer 2023 cover",
+    width: 893,
+    height: 1263,
+  },
+  "sa-homeschooling-issue-2-2021": {
+    src: "/magazine-covers/sa-homeschooling-issue-2-2021.jpg",
+    alt: "SA Homeschooling & Beyond Issue 2 2021 cover",
+    width: 974,
+    height: 1263,
+  },
+  "sa-homeschooling-issue-3-2021": {
+    src: "/magazine-covers/sa-homeschooling-issue-3-2021.jpg",
+    alt: "SA Homeschooling & Beyond Issue 3 2021 cover",
+    width: 974,
+    height: 1263,
+  },
+  "sa-homeschooling-issue-4-2021": {
+    src: "/magazine-covers/sa-homeschooling-issue-4-2021.jpg",
+    alt: "SA Homeschooling & Beyond Issue 4 2021 cover",
+    width: 974,
+    height: 1263,
+  },
+  "sa-homeschooling-issue-5": {
+    src: "/magazine-covers/sa-homeschooling-issue-5.jpg",
+    alt: "SA Homeschooling & Beyond Issue 5 cover",
+    width: 974,
+    height: 1263,
+  },
+  "sa-homeschooling-issue-6-2021": {
+    src: "/magazine-covers/sa-homeschooling-issue-6-2021.jpg",
+    alt: "SA Homeschooling & Beyond Issue 6 2021 cover",
+    width: 974,
+    height: 1263,
+  },
+  "sa-homeschooling-issue-7-2021": {
+    src: "/magazine-covers/sa-homeschooling-issue-7-2021.jpg",
+    alt: "SA Homeschooling & Beyond Issue 7 2021 cover",
+    width: 974,
+    height: 1263,
+  },
+  "sa-homeschooling-issue-8-2022": {
+    src: "/magazine-covers/sa-homeschooling-issue-8-2022.jpg",
+    alt: "SA Homeschooling & Beyond Issue 8 2022 cover",
+    width: 974,
+    height: 1263,
+  },
+  "sa-homeschooling-issue-9-2022": {
+    src: "/magazine-covers/sa-homeschooling-issue-9-2022.jpg",
+    alt: "SA Homeschooling & Beyond Issue 9 2022 cover",
+    width: 974,
+    height: 1263,
+  },
+  "sa-homeschooling-spring-2024": {
+    src: "/magazine-covers/sa-homeschooling-spring-2024.jpg",
+    alt: "SA Homeschooling & Beyond Spring 2024 cover",
+    width: 893,
+    height: 1263,
+  },
+  "sa-homeschooling-spring-2025": {
+    src: "/magazine-covers/sa-homeschooling-spring-2025.jpg",
+    alt: "SA Homeschooling & Beyond Spring 2025 cover",
+    width: 893,
+    height: 1263,
+  },
+  "sa-homeschooling-summer-2024": {
+    src: "/magazine-covers/sa-homeschooling-summer-2024.jpg",
+    alt: "SA Homeschooling & Beyond Summer 2024 cover",
+    width: 893,
+    height: 1263,
+  },
+  "sa-homeschooling-winter-2024": {
+    src: "/magazine-covers/sa-homeschooling-winter-2024.jpg",
+    alt: "SA Homeschooling & Beyond Winter 2024 cover",
+    width: 893,
+    height: 1263,
+  },
+  "sa-homeschooling-winter-2025": {
+    src: "/magazine-covers/sa-homeschooling-winter-2025.jpg",
+    alt: "SA Homeschooling & Beyond Winter 2025 cover",
+    width: 893,
+    height: 1263,
+  },
+} satisfies Record<string, NonNullable<MagazineIssue["coverImage"]>>;
+
+const localMagazineOrder = [
+  "sa-homeschooling-december-2025",
+  "sa-homeschooling-issue-1-2025",
+  "sa-homeschooling-winter-2025",
+  "sa-homeschooling-spring-2025",
+  "sa-homeschooling-summer-2024",
+  "sa-homeschooling-spring-2024",
+  "sa-homeschooling-winter-2024",
+  "sa-homeschooling-autumn-2024",
+  "sa-homeschooling-issue-16-summer-2023",
+  "sa-homeschooling-issue-15-spring-2023",
+  "sa-homeschooling-issue-14-winter-2023",
+  "sa-homeschooling-issue-13-autumn-2023",
+  "sa-homeschooling-issue-12-summer-2022",
+  "sa-homeschooling-issue-11-spring-2022",
+  "sa-homeschooling-issue-9-2022",
+  "sa-homeschooling-issue-8-2022",
+  "sa-homeschooling-issue-7-2021",
+  "sa-homeschooling-issue-6-2021",
+  "sa-homeschooling-issue-5",
+  "sa-homeschooling-issue-4-2021",
+  "sa-homeschooling-issue-3-2021",
+  "sa-homeschooling-issue-2-2021",
+  "sa-homeschooling-issue-1",
+] as const;
+
+const localMagazineDescriptions: Record<(typeof localMagazineOrder)[number], string> = {
+  "sa-homeschooling-december-2025":
+    "SA Homeschooling & Beyond - December 2025 looks ahead to a successful 2026 with practical education tips, support for active learning, autism-friendly options, critical thinking, sleep success, and family wellbeing.",
+  "sa-homeschooling-issue-1-2025":
+    "SA Homeschooling & Beyond - Issue 1, 2025 is a vibrant, family-focused publication that explores the evolving landscape of education in South Africa, with a strong emphasis on homeschooling, alternative learning paths, and youth empowerment.",
+  "sa-homeschooling-winter-2025":
+    "SA Homeschooling & Beyond - Winter 2025 explores parenting in the digital age, the timeless value of classic books, family bonding through cooking, and the beauty of the homeschooling journey.",
+  "sa-homeschooling-spring-2025":
+    "SA Homeschooling & Beyond - Spring 2025 examines AI in education, extra lessons, maths literacy, autism stories, and practical support for families preparing for a new season of learning.",
+  "sa-homeschooling-summer-2024":
+    "SA Homeschooling & Beyond - Summer 2024 is a warm, insightful edition for South African families navigating homeschooling, screen time, matric recovery, cooking and bonding, and independent play.",
+  "sa-homeschooling-spring-2024":
+    "SA Homeschooling & Beyond - Spring 2024 is a thoughtful and empowering resource for South African families navigating education, parenting, connected classrooms, online safety, and future-readiness.",
+  "sa-homeschooling-winter-2024":
+    "SA Homeschooling & Beyond - Winter 2024 is a rich and reflective guide for families navigating homeschooling, praise, resilience, winter wellbeing, and practical ways to empower children.",
+  "sa-homeschooling-autumn-2024":
+    "SA Homeschooling & Beyond - Autumn 2024 explores confident homeschooling, teen communication, gestalt language processing, online wilderness, and support for children who are not coping.",
+  "sa-homeschooling-issue-16-summer-2023":
+    "SA Homeschooling & Beyond - Issue 16, Summer 2023 is a lively and insightful edition that blends emotional support, creative inspiration, and future-focused advice for families.",
+  "sa-homeschooling-issue-15-spring-2023":
+    "SA Homeschooling & Beyond - Issue 15, Spring 2023 is a vibrant edition that speaks directly to South African homeschooling families navigating exam season, personal growth, and future planning.",
+  "sa-homeschooling-issue-14-winter-2023":
+    "SA Homeschooling & Beyond - Issue 14, Winter 2023 is a rich, emotionally resonant edition that blends practical homeschooling strategies with empowering insights for colder months.",
+  "sa-homeschooling-issue-13-autumn-2023":
+    "SA Homeschooling & Beyond - Issue 13, Autumn 2023 is a heartfelt and practical edition that dives into emotional, cognitive, and logistical aspects of homeschooling through new beginnings and academic challenges.",
+  "sa-homeschooling-issue-12-summer-2022":
+    "SA Homeschooling & Beyond - Issue 12, Summer 2022 is a vibrant, future-focused edition that celebrates learning styles, entrepreneurial thinking, food awareness, and confident homeschooling.",
+  "sa-homeschooling-issue-11-spring-2022":
+    "SA Homeschooling & Beyond - Issue 11, Spring 2022 is a dynamic, emotionally intelligent edition that blends practical homeschooling advice with creative inspiration, cognitive insights, and family bonding ideas.",
+  "sa-homeschooling-issue-9-2022":
+    "SA Homeschooling & Beyond - Issue 9, 2022 is a foundational edition that speaks directly to South African families exploring homeschooling, online safety, growth mindset, and practical learning support.",
+  "sa-homeschooling-issue-8-2022":
+    "SA Homeschooling Issue 8 (2022) explores the evolving landscape of education in South Africa, spotlighting flexible learning models, parental empowerment, art, hearing health, and the emotional journey of homeschooling.",
+  "sa-homeschooling-issue-7-2021":
+    "SA Homeschooling & Beyond - Issue 7, 2021 is a foundational edition that captures the heart of South Africa's homeschooling movement with home learning spaces, ADHD questions, and music therapy.",
+  "sa-homeschooling-issue-6-2021":
+    "SA Homeschooling - Issue 6, 2021 is a vibrant, family-focused edition that celebrates curiosity, creativity, and connection in the homeschooling journey.",
+  "sa-homeschooling-issue-5":
+    "SA Homeschooling - Issue 5 explores Learning Through Life, highlighting how everyday experiences - from gardening to storytelling - can become powerful educational moments.",
+  "sa-homeschooling-issue-4-2021":
+    "SA Homeschooling - Issue 4, 2021 is a rich and practical edition themed around Living & Learning - Together, offering families tools to future-proof their teens, nurture cognitive development, and stay grounded through seasonal shifts.",
+  "sa-homeschooling-issue-3-2021":
+    "SA Homeschooling - Issue 3, 2021 dives into Learning Through Life, celebrating how everyday experiences - from baking to budgeting - can become powerful educational tools.",
+  "sa-homeschooling-issue-2-2021":
+    "SA Homeschooling - Issue 2, 2021 is a dynamic and emotionally resonant edition that blends practical tools with heartfelt stories to support families navigating homeschooling during uncertain times.",
+  "sa-homeschooling-issue-1":
+    "SA Homeschooling - Issue 1 marks the beginning of a heartfelt and practical journey into alternative education in South Africa, introducing core homeschooling principles, family stories, and curriculum choices.",
+};
+
+const localMagazineIssues: MagazineIssue[] = localMagazineOrder.map((slug) => ({
+  id: slug,
+  slug,
+  title: titleFromSlug(slug),
+  issueNumber: extractIssueNumber(slug),
+  description: localMagazineDescriptions[slug],
+  pdfUrl: `/magazines/${slug}.pdf`,
+  embedUrl: `/magazines/embed/${slug}`,
+  coverImage: localMagazineCovers[slug],
+}));
+
 const magazineFallbackCovers = [
   {
     src: "/images/photo-homeschool-family-table.png",
@@ -555,48 +782,7 @@ export async function getMagazineEmbedData() {
 }
 
 export async function getMagazinePosts() {
-  const [embedResult, postResult] = await Promise.allSettled([
-    getMagazineEmbedData(),
-    getMagazineRelatedPosts(),
-  ]);
-  const embedIssues = embedResult.status === "fulfilled" ? embedResult.value : [];
-  const posts = postResult.status === "fulfilled" ? postResult.value : [];
-  const usedPostIds = new Set<number>();
-
-  const issues = embedIssues.map((issue) => {
-    const matchedPost = findMagazinePost(issue, posts);
-    const postCover = matchedPost ? getFeaturedImage(matchedPost) : undefined;
-
-    if (matchedPost) usedPostIds.add(matchedPost.id);
-
-    return {
-      ...issue,
-      title: matchedPost ? getPostTitle(matchedPost) : issue.title,
-      description: matchedPost ? getPostExcerpt(matchedPost) : issue.description,
-      coverImage: getMagazineCoverImage(issue.coverImage, postCover),
-      sourcePost: matchedPost,
-    };
-  });
-
-  posts
-    .filter((post) => !usedPostIds.has(post.id))
-    .forEach((post) => {
-      const pdfUrl = extractFirstPdfUrl(post.content.rendered);
-
-      issues.push({
-        id: String(post.id),
-        slug: post.slug,
-        title: getPostTitle(post),
-        issueNumber: extractIssueNumber(`${getPostTitle(post)} ${post.slug}`),
-        description: getPostExcerpt(post),
-        pdfUrl,
-        embedUrl: pdfUrl,
-        coverImage: getMagazineCoverImage(undefined, getFeaturedImage(post)),
-        sourcePost: post,
-      });
-    });
-
-  return applyMagazineFallbackCovers(dedupeMagazineIssues(issues));
+  return localMagazineIssues;
 }
 
 export async function getMagazineBySlug(slug: string) {
@@ -708,11 +894,19 @@ export function getFeaturedImage(post: WPPost) {
   };
 }
 
-function getMagazineCoverImage(primary?: MagazineIssue["coverImage"], fallback?: MagazineIssue["coverImage"]) {
-  if (primary && !isPlaceholderImage(primary.src)) return primary;
-  if (fallback && !isPlaceholderImage(fallback.src)) return fallback;
+function getMagazineCoverImage(...covers: Array<MagazineIssue["coverImage"] | undefined>) {
+  return covers.find((cover) => cover && !isPlaceholderImage(cover.src));
+}
 
-  return undefined;
+function getLocalMagazineCover(issue: Pick<MagazineIssue, "slug" | "pdfUrl">, post?: WPPost) {
+  const candidates = [
+    slugFromUrl(issue.pdfUrl),
+    issue.slug,
+    post?.slug,
+    post ? slugFromUrl(extractFirstPdfUrl(post.content.rendered)) : "",
+  ].filter(Boolean);
+
+  return candidates.map((candidate) => localMagazineCovers[candidate as keyof typeof localMagazineCovers]).find(Boolean);
 }
 
 function isPlaceholderImage(src?: string) {
@@ -897,7 +1091,7 @@ function dedupeMagazineIssues(issues: MagazineIssue[]) {
   const seen = new Set<string>();
 
   return issues.filter((issue) => {
-    const key = issue.pdfUrl || issue.slug;
+    const key = slugFromUrl(issue.pdfUrl) || issue.slug;
 
     if (seen.has(key)) return false;
 
