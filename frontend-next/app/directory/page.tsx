@@ -5,6 +5,7 @@ import AdSlot from "@/components/AdSlot";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import NewsletterForm from "@/components/NewsletterForm";
+import { partners } from "@/lib/partners";
 import { getPosts, getPostTitle } from "@/lib/wordpress";
 
 export const metadata: Metadata = {
@@ -19,41 +20,6 @@ export const metadata: Metadata = {
     url: "/directory",
   },
 };
-
-const listings = [
-  {
-    logo: "/images/directory-praxis.svg",
-    name: "Praxis School - A Student-Centred Online IEB School",
-    description: "Praxis Online School is part of a group of experienced providers providing excellence in Education.",
-  },
-  {
-    logo: "/images/directory-bellavista.svg",
-    name: "Bellavista S.H.A.R.E",
-    description:
-      "Bellavista S.H.A.R.E. harnesses the capacity of staff and education thought leaders to improve educational delivery in Southern Africa.",
-  },
-  {
-    logo: "/images/directory-conquesta.svg",
-    name: "Conquesta Academic Annual School Olympiads",
-    description:
-      "Annual multiple choice Olympiads for grades 1-9 students across South Africa, Namibia, Botswana and eSwatini.",
-    website: "https://www.conquestaolympiads.com/",
-  },
-  {
-    logo: "/images/directory-answer-series.svg",
-    name: "The Answer Series",
-    description:
-      "South Africa's leading provider of study guides, supporting learners, parents, teachers, and tutors for more than 50 years.",
-    website: "https://www.theanswer.co.za/",
-  },
-  {
-    logo: "/images/directory-cambridge.svg",
-    name: "Cambridge",
-    description:
-      "Trusted learning resources that bring together local curriculum expertise and international best practice for homeschoolers.",
-    website: "https://www.cambridge.org/education",
-  },
-];
 
 export default async function DirectoryPage() {
   const latestPosts = await getPosts({ perPage: 5 });
@@ -81,22 +47,27 @@ export default async function DirectoryPage() {
 
       <main className="directory-layout">
         <section className="directory-list" aria-label="Partner listings">
-          {listings.map((listing) => (
-            <article className="directory-card" key={listing.name}>
-              <Image className="directory-logo" src={listing.logo} alt={`${listing.name} logo`} width={220} height={120} />
-              <h2>{listing.name}</h2>
-              <p>{listing.description}</p>
-              {listing.website ? (
-                <a
-                  className="directory-website-link"
-                  href={listing.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Visit ${listing.name} official website`}
-                >
-                  Visit Website
-                </a>
-              ) : null}
+          {partners.map((partner) => (
+            <article className="directory-card" key={partner.slug}>
+              <Image className="directory-logo" src={partner.logo} alt={`${partner.name} logo`} width={220} height={120} />
+              <h2>{partner.name}</h2>
+              <p>{partner.shortDescription}</p>
+              <div className="directory-card-actions">
+                <Link className="directory-readmore-link" href={`/directory/${partner.slug}`}>
+                  Read more
+                </Link>
+                {partner.website ? (
+                  <a
+                    className="directory-website-link"
+                    href={partner.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Visit ${partner.name} official website`}
+                  >
+                    Visit Website
+                  </a>
+                ) : null}
+              </div>
             </article>
           ))}
         </section>

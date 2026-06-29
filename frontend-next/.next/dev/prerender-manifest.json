@@ -1,11 +1,1 @@
-{
-  "version": 4,
-  "routes": {},
-  "dynamicRoutes": {},
-  "notFoundRoutes": [],
-  "preview": {
-    "previewModeId": "8ba07abcf4f137bf358d67997e97b551",
-    "previewModeSigningKey": "18a41aa787c6e9070f91358d7c193704d0c46ea01e786766db9a3280fc9be8fb",
-    "previewModeEncryptionKey": "93c5137c5c851ddf3a3c9fcfda429562f838f5110257504b6b4088fb8c26e421"
-  }
-}
+{"version":4,"routes":{"/directory/praxis-school-borderless-learning":{},"/directory/bellavista-share":{},"/directory/conquesta-academic-annual-school-olympiads":{},"/directory/the-answer-series":{},"/directory/cambridge":{}},"dynamicRoutes":{"/directory/[slug]":{"dataRoute":null,"dataRouteRegex":null,"fallback":null,"fallbackRevalidate":false,"fallbackSourceRoute":"/directory/[slug]","routeRegex":"^\\/directory\\/([^/]+?)(?:\\/)?$","allowHeader":[]}},"notFoundRoutes":[],"preview":{"previewModeId":"b0301fdd388cb3c608072a8c50d9bf70","previewModeSigningKey":"ecd7fb013a29127b46c6878949ff70a432e45fe00ffacdbef8ae81f43741effb","previewModeEncryptionKey":"77ada10dddf8bb9d89ce44e3d3bf8a2910cac2a9429b148e123578bc4dc614f5"}}

@@ -28,6 +28,10 @@ const metadata = {
     },
     alternates: {
         canonical: siteUrl
+    },
+    icons: {
+        icon: "/icon.png",
+        apple: "/apple-icon.png"
     }
 };
 function RootLayout({ children }) {
@@ -37,12 +41,12 @@ function RootLayout({ children }) {
             children: children
         }, void 0, false, {
             fileName: "[project]/app/layout.tsx",
-            lineNumber: 34,
+            lineNumber: 38,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/layout.tsx",
-        lineNumber: 33,
+        lineNumber: 37,
         columnNumber: 5
     }, this);
 }
