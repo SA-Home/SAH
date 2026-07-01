@@ -21,7 +21,6 @@ export const metadata: Metadata = {
 
 export default async function MagazinesPage() {
   const magazines = await getMagazinePosts();
-  const introIssues = magazines.slice(0, 2);
 
   return (
     <div className="magazines-page">
@@ -46,21 +45,6 @@ export default async function MagazinesPage() {
 
       <main className="magazines-main">
         <AdBanner placement="magazine-top" wrapClassName="magazine-bottom-ad" />
-
-        <section className="magazine-intro-grid" aria-label="Featured magazine descriptions">
-          {introIssues.length ? (
-            introIssues.map((issue) => (
-              <p key={issue.id}>
-                <strong>{issue.title}</strong> {issue.description}
-              </p>
-            ))
-          ) : (
-            <p>
-              The SA Homeschooling &amp; Beyond magazine archive is being prepared. Please check back soon for the
-              latest online issues.
-            </p>
-          )}
-        </section>
 
         <section className="magazine-grid" aria-label="Magazine library">
           {magazines.length ? (

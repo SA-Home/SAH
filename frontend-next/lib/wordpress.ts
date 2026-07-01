@@ -290,9 +290,9 @@ const localMagazineCovers = {
 
 const localMagazineOrder = [
   "sa-homeschooling-december-2025",
-  "sa-homeschooling-issue-1-2025",
-  "sa-homeschooling-winter-2025",
   "sa-homeschooling-spring-2025",
+  "sa-homeschooling-winter-2025",
+  "sa-homeschooling-issue-1-2025",
   "sa-homeschooling-summer-2024",
   "sa-homeschooling-spring-2024",
   "sa-homeschooling-winter-2024",
@@ -316,57 +316,61 @@ const localMagazineOrder = [
 
 const localMagazineDescriptions: Record<(typeof localMagazineOrder)[number], string> = {
   "sa-homeschooling-december-2025":
-    "SA Homeschooling & Beyond - December 2025 looks ahead to a successful 2026 with practical education tips, support for active learning, autism-friendly options, critical thinking, sleep success, and family wellbeing.",
-  "sa-homeschooling-issue-1-2025":
-    "SA Homeschooling & Beyond - Issue 1, 2025 is a vibrant, family-focused publication that explores the evolving landscape of education in South Africa, with a strong emphasis on homeschooling, alternative learning paths, and youth empowerment.",
-  "sa-homeschooling-winter-2025":
-    "SA Homeschooling & Beyond - Winter 2025 explores parenting in the digital age, the timeless value of classic books, family bonding through cooking, and the beauty of the homeschooling journey.",
+    "The SA Homeschooling December 2025 issue is dedicated to empowering parents for a successful academic year ahead, focusing on essential developmental, educational, and planning topics. The magazine explores critical foundations for learning, featuring articles like “Sleep Your Way to Success,” which highlights how crucial quality sleep is for improving a homeschooler’s memory, emotional regulation, and overall academic performance. Addressing special needs, the cover story asks “What are the Best Educational Options for Autism?” offering insight into the condition and explaining why homeschooling is often the preferred, low-sensory, and flexible choice for many South African families.",
   "sa-homeschooling-spring-2025":
-    "SA Homeschooling & Beyond - Spring 2025 examines AI in education, extra lessons, maths literacy, autism stories, and practical support for families preparing for a new season of learning.",
+    "The Spring 2025 issue of SA Homeschooling and Beyond magazine explores key topics shaping modern homeschooling in South Africa. It discusses the importance of choosing pure mathematics, the growing role of AI in education, and how extra lessons can help close academic gaps. The magazine also features a story of a family homeschooling a child with autism, highlighting resilience and personalized learning. Parents are guided on understanding and managing ADHD in children through practical, expert-backed strategies. Lifestyle content includes a comforting oxtail recipe that turns cooking into a family learning experience.",
+  "sa-homeschooling-winter-2025":
+    "The Winter 2025 edition of SA Homeschooling & Beyond explores parenting in the digital age, the timeless value of classic books, family bonding through cooking, and the beauty of the homeschooling journey. Packed with practical guides, resources, and inspiration, this issue connects homeschooling families with the tools and brands that support their learning and lifestyle.",
+  "sa-homeschooling-issue-1-2025":
+    "SA Homeschooling & Beyond – Issue 1, 2025 is a vibrant, family-focused publication that explores the evolving landscape of education in South Africa, with a strong emphasis on homeschooling, alternative learning paths, and youth empowerment. This spring edition blends practical advice, expert insights, and inspiring stories to support parents, educators, and learners navigating non-traditional schooling",
   "sa-homeschooling-summer-2024":
-    "SA Homeschooling & Beyond - Summer 2024 is a warm, insightful edition for South African families navigating homeschooling, screen time, matric recovery, cooking and bonding, and independent play.",
+    "SA Homeschooling & Beyond – Summer 2024 Edition is a warm, insightful magazine tailored for South African families navigating homeschooling, alternative education, and parenting in a rapidly evolving world. This festive-season issue blends practical guidance with emotional support, creative inspiration, and expert advice to help parents and learners thrive.",
   "sa-homeschooling-spring-2024":
-    "SA Homeschooling & Beyond - Spring 2024 is a thoughtful and empowering resource for South African families navigating education, parenting, connected classrooms, online safety, and future-readiness.",
+    "SA Homeschooling & Beyond – Spring 2024 Edition is a thoughtful and empowering resource for South African families navigating education, parenting, and youth development. This issue leans into emotional well-being, digital literacy, and future-readiness, offering both practical advice and heartfelt perspectives.",
   "sa-homeschooling-winter-2024":
-    "SA Homeschooling & Beyond - Winter 2024 is a rich and reflective guide for families navigating homeschooling, praise, resilience, winter wellbeing, and practical ways to empower children.",
+    "SA Homeschooling & Beyond – Winter 2024 Edition is a rich and reflective guide for South African families navigating homeschooling, parenting, and education during the colder months. This issue leans into emotional resilience, academic strategy, and holistic development, offering practical tools and heartfelt insights for learners and parents alike.",
   "sa-homeschooling-autumn-2024":
-    "SA Homeschooling & Beyond - Autumn 2024 explores confident homeschooling, teen communication, gestalt language processing, online wilderness, and support for children who are not coping.",
+    "SA Homeschooling & Beyond – Autumn 2024 Edition is a rich and reflective magazine designed for South African families exploring homeschooling, alternative education, and youth development. This issue leans into emotional intelligence, academic strategy, and future-readiness, offering practical tools and heartfelt insights for learners and parents alike.",
   "sa-homeschooling-issue-16-summer-2023":
-    "SA Homeschooling & Beyond - Issue 16, Summer 2023 is a lively and insightful edition that blends emotional support, creative inspiration, and future-focused advice for families.",
+    "SA Homeschooling & Beyond – Issue 16, Summer 2023 is a lively and insightful edition that blends practical homeschooling guidance with emotional support, creative inspiration, and future-focused advice for South African families. It’s designed to help parents and learners thrive during the festive season and beyond.",
   "sa-homeschooling-issue-15-spring-2023":
-    "SA Homeschooling & Beyond - Issue 15, Spring 2023 is a vibrant edition that speaks directly to South African homeschooling families navigating exam season, personal growth, and future planning.",
+    "SA Homeschooling & Beyond – Issue 15, Spring 2023 is a vibrant, practical, and emotionally intelligent edition that speaks directly to South African homeschooling families navigating exam season, personal growth, and future planning.",
   "sa-homeschooling-issue-14-winter-2023":
-    "SA Homeschooling & Beyond - Issue 14, Winter 2023 is a rich, emotionally resonant edition that blends practical homeschooling strategies with empowering insights for colder months.",
+    "SA Homeschooling & Beyond – Issue 14, Winter 2023 is a rich, emotionally resonant edition that blends practical homeschooling strategies with empowering insights for parents and learners navigating the colder months.",
   "sa-homeschooling-issue-13-autumn-2023":
-    "SA Homeschooling & Beyond - Issue 13, Autumn 2023 is a heartfelt and practical edition that dives into emotional, cognitive, and logistical aspects of homeschooling through new beginnings and academic challenges.",
+    "SA Homeschooling & Beyond – Issue 13, Autumn 2023 is a heartfelt and practical edition that dives into the emotional, cognitive, and logistical aspects of homeschooling, especially for families navigating new beginnings and academic challenges.",
   "sa-homeschooling-issue-12-summer-2022":
-    "SA Homeschooling & Beyond - Issue 12, Summer 2022 is a vibrant, future-focused edition that celebrates learning styles, entrepreneurial thinking, food awareness, and confident homeschooling.",
+    "SA Homeschooling & Beyond – Issue 12, Summer 2022 is a vibrant, future-focused edition that celebrates the power of homeschooling to nurture confident, curious, and capable learners in South Africa.",
   "sa-homeschooling-issue-11-spring-2022":
-    "SA Homeschooling & Beyond - Issue 11, Spring 2022 is a dynamic, emotionally intelligent edition that blends practical homeschooling advice with creative inspiration, cognitive insights, and family bonding ideas.",
+    "SA Homeschooling & Beyond – Issue 11, Spring 2022 is a dynamic, emotionally intelligent edition that blends practical homeschooling advice with creative inspiration, cognitive insights, and family bonding ideas.",
   "sa-homeschooling-issue-9-2022":
-    "SA Homeschooling & Beyond - Issue 9, 2022 is a foundational edition that speaks directly to South African families exploring homeschooling, online safety, growth mindset, and practical learning support.",
+    "SA Homeschooling & Beyond – Issue 9, 2022 is a foundational edition that speaks directly to South African families exploring the possibilities of homeschooling and alternative education. It’s packed with practical advice, emotional support, and empowering insights for both new and experienced homeschoolers",
   "sa-homeschooling-issue-8-2022":
-    "SA Homeschooling Issue 8 (2022) explores the evolving landscape of education in South Africa, spotlighting flexible learning models, parental empowerment, art, hearing health, and the emotional journey of homeschooling.",
+    "SA Homeschooling Issue 8 (2022) explores the evolving landscape of education in South Africa, spotlighting flexible learning models, parental empowerment, and the emotional journey of homeschooling",
   "sa-homeschooling-issue-7-2021":
-    "SA Homeschooling & Beyond - Issue 7, 2021 is a foundational edition that captures the heart of South Africa's homeschooling movement with home learning spaces, ADHD questions, and music therapy.",
+    "SA Homeschooling & Beyond – Issue 7, 2021 is a foundational edition that captures the heart of South Africa’s homeschooling movement during a time of global educational shifts. It offers practical guidance for new homeschoolers, emotional support for families adjusting to change, and expert insights into learning strategies that work.",
   "sa-homeschooling-issue-6-2021":
-    "SA Homeschooling - Issue 6, 2021 is a vibrant, family-focused edition that celebrates curiosity, creativity, and connection in the homeschooling journey.",
+    "SA Homeschooling – Issue 6, 2021 is a vibrant, family-focused edition that celebrates curiosity, creativity, and connection in the homeschooling journey. With its theme “Living & Learning – Together,” this issue blends practical advice with emotional insight and hands-on activities.",
   "sa-homeschooling-issue-5":
-    "SA Homeschooling - Issue 5 explores Learning Through Life, highlighting how everyday experiences - from gardening to storytelling - can become powerful educational moments.",
+    "SA Homeschooling – Issue 5, 2021 explores the theme of “Learning Through Life,” highlighting how everyday experiences—from gardening to storytelling—can become powerful educational moments.",
   "sa-homeschooling-issue-4-2021":
-    "SA Homeschooling - Issue 4, 2021 is a rich and practical edition themed around Living & Learning - Together, offering families tools to future-proof their teens, nurture cognitive development, and stay grounded through seasonal shifts.",
+    "SA Homeschooling – Issue 4, 2021 is a rich and practical edition themed around “Living & Learning – Together,” offering families tools to future-proof their teens, nurture cognitive development, and stay grounded through seasonal shifts.",
   "sa-homeschooling-issue-3-2021":
-    "SA Homeschooling - Issue 3, 2021 dives into Learning Through Life, celebrating how everyday experiences - from baking to budgeting - can become powerful educational tools.",
+    "A Homeschooling – Issue 3, 2021 dives into the theme of “Learning Through Life,” celebrating how everyday experiences—from baking to budgeting—can become powerful educational tools.",
   "sa-homeschooling-issue-2-2021":
-    "SA Homeschooling - Issue 2, 2021 is a dynamic and emotionally resonant edition that blends practical tools with heartfelt stories to support families navigating homeschooling during uncertain times.",
+    "SA Homeschooling – Issue 2, 2021 is a dynamic and emotionally resonant edition that blends practical tools with heartfelt stories to support families navigating homeschooling during uncertain times.",
   "sa-homeschooling-issue-1":
-    "SA Homeschooling - Issue 1 marks the beginning of a heartfelt and practical journey into alternative education in South Africa, introducing core homeschooling principles, family stories, and curriculum choices.",
+    "SA Homeschooling – Issue 1 marks the beginning of a heartfelt and practical journey into alternative education in South Africa. This debut edition introduces core homeschooling principles, shares real-life stories from families, and offers expert insights into learning styles, emotional development, and curriculum choices. It sets the tone for a community-driven, values-based approach to education—where curiosity, connection, and flexibility lead the way.",
+};
+
+const localMagazineTitles: Partial<Record<(typeof localMagazineOrder)[number], string>> = {
+  "sa-homeschooling-issue-5": "SA Homeschooling Issue 5 2021",
 };
 
 const localMagazineIssues: MagazineIssue[] = localMagazineOrder.map((slug) => ({
   id: slug,
   slug,
-  title: titleFromSlug(slug),
+  title: localMagazineTitles[slug] ?? titleFromSlug(slug),
   issueNumber: extractIssueNumber(slug),
   description: localMagazineDescriptions[slug],
   pdfUrl: `/magazines/${slug}.pdf`,
