@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" role="img" aria-label="French toast sandwich">
+  <rect width="520" height="360" fill="#227aa3"/>
+  <path d="M0 84h520M0 176h520M0 268h520" stroke="#17627f" stroke-width="8" opacity=".45"/>
+  <ellipse cx="272" cy="180" rx="156" ry="132" fill="#8d5d33"/>
+  <ellipse cx="272" cy="178" rx="139" ry="116" fill="#b17841"/>
+  <g transform="rotate(16 242 177)">
+    <path d="M128 96h170l-18 154H145z" fill="#e1b35f"/>
+    <path d="M149 113h126l-14 112H161z" fill="#f3d48c"/>
+    <path d="M164 120l-13 103M201 115l-11 114M240 118l-11 105" stroke="#bd7127" stroke-width="10"/>
+    <path d="M148 229h130l21 38H126z" fill="#c47b33"/>
+  </g>
+  <g transform="rotate(-18 318 162)">
+    <path d="M240 70h160l-16 140H258z" fill="#dda957"/>
+    <path d="M258 90h119l-12 96H270z" fill="#f0cf82"/>
+    <path d="M276 94l-11 91M312 90l-10 97M348 94l-10 88" stroke="#b96f25" stroke-width="9"/>
+  </g>
+  <path d="M325 126c47 13 80 42 105 86-42 2-78-10-111-36z" fill="#4f8d3e"/>
+  <path d="M124 220c42 8 80 2 115-20-17 42-56 63-116 63z" fill="#3f7d34"/>
+</svg>

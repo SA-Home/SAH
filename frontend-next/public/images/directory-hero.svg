@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1480 150" role="img" aria-label="Learner working at a desk">
+  <defs>
+    <filter id="blur">
+      <feGaussianBlur stdDeviation="2.5"/>
+    </filter>
+  </defs>
+  <rect width="1480" height="150" fill="#6d655a"/>
+  <g filter="url(#blur)" opacity=".9">
+    <rect x="760" y="-20" width="550" height="170" rx="16" fill="#2d2d2d"/>
+    <rect x="890" y="16" width="290" height="86" rx="7" fill="#f1f1f1"/>
+    <rect x="70" y="40" width="420" height="120" rx="60" fill="#d8d2c8"/>
+    <circle cx="438" cy="52" r="84" fill="#7b543d"/>
+    <path d="M265 122c120-45 288-32 415 2" fill="none" stroke="#41362e" stroke-width="28"/>
+    <rect x="1010" y="104" width="260" height="28" rx="8" fill="#cfc7bd"/>
+  </g>
+  <rect width="1480" height="150" fill="#000" opacity=".45"/>
+</svg>

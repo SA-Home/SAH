@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 153" role="img" aria-label="Cambridge">
+  <rect width="300" height="153" fill="#ffffff"/>
+  <rect x="34" y="44" width="37" height="37" fill="#f7f7f7" stroke="#222"/>
+  <path d="M38 47h29M38 57h29M38 68h29M47 47v31M58 47v31" stroke="#8d1730" stroke-width="2"/>
+  <text x="85" y="74" font-family="Georgia, serif" font-size="39" fill="#111111">Cambridge</text>
+  <text x="91" y="102" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#222222">cambridge.org/education</text>
+</svg>

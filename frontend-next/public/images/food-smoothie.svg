@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" role="img" aria-label="Banana peanut butter smoothie">
+  <rect width="520" height="360" fill="#e7cf9f"/>
+  <rect x="172" y="84" width="150" height="220" rx="38" fill="#d4913e"/>
+  <rect x="188" y="54" width="118" height="45" rx="12" fill="#f3d08a"/>
+  <rect x="202" y="95" width="92" height="196" rx="26" fill="#b77327"/>
+  <path d="M315 91c38-43 82-50 117-18-25 39-66 48-117 18z" fill="#e2a72c"/>
+  <rect x="0" y="0" width="520" height="360" fill="#fff" opacity=".08"/>
+</svg>

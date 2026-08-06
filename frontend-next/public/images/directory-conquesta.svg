@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 153" role="img" aria-label="Conquesta">
+  <rect width="300" height="153" fill="#ffffff"/>
+  <path d="M36 86C58 24 135 11 191 46" fill="none" stroke="#64ba45" stroke-width="10"/>
+  <path d="M35 92C63 34 137 21 205 57" fill="none" stroke="#288bd2" stroke-width="10"/>
+  <text x="76" y="85" font-family="Georgia, serif" font-size="41" font-weight="700" fill="#111111">Conquesta</text>
+  <text x="162" y="106" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#333333">Take the Challenge!</text>
+</svg>

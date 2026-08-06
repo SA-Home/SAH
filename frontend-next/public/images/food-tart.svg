@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" role="img" aria-label="Bacon and mushroom paptert">
+  <rect width="520" height="360" fill="#dfd1b8"/>
+  <ellipse cx="168" cy="190" rx="115" ry="75" fill="#9b6a36"/>
+  <ellipse cx="168" cy="178" rx="100" ry="60" fill="#f2d69f"/>
+  <ellipse cx="355" cy="190" rx="115" ry="75" fill="#9b6a36"/>
+  <ellipse cx="355" cy="178" rx="100" ry="60" fill="#f2d69f"/>
+  <g fill="#8f3f26">
+    <rect x="120" y="165" width="35" height="10" rx="4"/><rect x="190" y="185" width="40" height="10" rx="4"/><rect x="320" y="164" width="36" height="10" rx="4"/><rect x="385" y="188" width="40" height="10" rx="4"/>
+  </g>
+</svg>
