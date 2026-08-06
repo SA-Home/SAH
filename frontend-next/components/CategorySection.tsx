@@ -11,21 +11,34 @@ export default function CategorySection({ category, posts }: CategorySectionProp
   if (!posts.length) return null;
 
   const topics = getCategoryTopics(category.slug);
+  const useArticleCards = category.slug === "education" || category.slug === "development";
 
   return (
-    <section className="home-section home-section--soft" aria-labelledby={`${category.slug}-title`}>
+    <section
+      className={`home-section home-section--soft${useArticleCards ? " home-category-section--cards" : ""}`}
+      aria-label={`${category.name} articles`}
+    >
       <div className="home-split home-category-grid">
         <div className="section-heading home-category-heading">
           <span className="kicker">{category.name}</span>
-          <h2 id={`${category.slug}-title`}>{category.description || `${category.name} stories and guides`}</h2>
         </div>
 
-        <div className="article-stack home-category-articles">
+        <div
+          className={
+            useArticleCards
+              ? "home-category-articles home-category-card-grid"
+              : "article-stack home-category-articles"
+          }
+        >
           {posts.slice(0, 3).map((post) => {
             const image = getFeaturedImage(post);
 
             return (
-              <Link className="article-row-modern" href={`/articles/${post.slug}`} key={post.id}>
+              <Link
+                className={useArticleCards ? "article-row-modern home-category-card" : "article-row-modern"}
+                href={`/articles/${post.slug}`}
+                key={post.id}
+              >
                 <Image src={image.src} alt="" width={160} height={110} />
                 <span>
                   <strong>{getPostTitle(post)}</strong>

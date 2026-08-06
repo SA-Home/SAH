@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import SignupPopup from "@/components/SignupPopup";
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sahomeschooling.com";
@@ -35,7 +36,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <SignupPopup />
+      </body>
     </html>
   );
 }

@@ -44,10 +44,10 @@ export default function Header() {
           <Link className="brand" href="/" aria-label="SA Homeschooling home">
             <Image
               className="brand-logo"
-              src="/images/logo-transparent.png"
+              src="/images/sa-home-school-logo-2026.png"
               alt="SA Home & School"
-              width={1600}
-              height={533}
+              width={1566}
+              height={257}
               priority
             />
           </Link>
@@ -102,10 +102,11 @@ export default function Header() {
             <Link className={pathname === "/subscribe" ? "active" : undefined} href="/subscribe" prefetch>
               Subscribe
             </Link>
-            <button className="search-link" type="button" aria-label="Search" onClick={() => setSearchOpen(true)}>
-              Search
-            </button>
           </nav>
+
+          <button className="search-link header-search-link" type="button" aria-label="Search" onClick={() => setSearchOpen(true)}>
+            Search
+          </button>
         </div>
       </header>
 

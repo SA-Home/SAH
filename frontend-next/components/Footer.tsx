@@ -12,6 +12,7 @@ export default function Footer() {
             Braamfontein, Johannesburg, South Africa
           </p>
         </section>
+
         <section>
           <h2>Useful Links</h2>
           <Link href="#">Advertise</Link>
@@ -21,24 +22,26 @@ export default function Footer() {
           <Link href="#">Privacy Policy for SA Homeschooling &amp; Beyond</Link>
           <Link href="/subscribe">Subscribe</Link>
         </section>
+
         <section>
           <h2>Follow Us</h2>
           <div className="social-links">
             <Link href="#" aria-label="Facebook">
-              f
+              <span aria-hidden="true">f</span>
             </Link>
             <Link href="#" aria-label="Instagram">
-              ig
+              <span aria-hidden="true">ig</span>
             </Link>
             <Link href="#" aria-label="LinkedIn">
-              in
+              <span aria-hidden="true">in</span>
             </Link>
             <Link href="#" aria-label="X">
-              x
+              <span aria-hidden="true">x</span>
             </Link>
           </div>
         </section>
       </div>
+
       <div className="footer-bottom">
         <span>&copy; 2026 The Digital Afrikan &nbsp; Powered by Newspack</span>
         <Link href="#">Privacy Policy for SA Homeschooling &amp; Beyond</Link>

@@ -1,5 +1,6 @@
 import type { MagazineIssue } from "@/lib/wordpress";
 import MagazineViewer from "./MagazineViewer";
+import ReadMoreText from "./ReadMoreText";
 
 type MagazineCardProps = {
   issue: MagazineIssue;
@@ -29,7 +30,7 @@ export default function MagazineCard({ issue }: MagazineCardProps) {
       )}
 
       <h2>{issue.title}</h2>
-      <p>{issue.description}</p>
+      <ReadMoreText className="magazine-description">{issue.description}</ReadMoreText>
     </article>
   );
 }

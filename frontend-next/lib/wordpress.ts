@@ -1,4 +1,5 @@
 import { unstable_cache } from "next/cache";
+import fallbackPostsData from "@/data/wp-fallback-posts.json";
 
 const WP_API = process.env.NEXT_PUBLIC_WP_API_URL ?? "https://sahomeschooling.com/wp-json";
 
@@ -17,6 +18,17 @@ export type WPCategory = {
   count: number;
   name: string;
   slug: string;
+  taxonomy?: string;
+  description?: string;
+  link?: string;
+};
+
+export type WPTag = {
+  id: number;
+  count: number;
+  name: string;
+  slug: string;
+  taxonomy?: string;
   description?: string;
   link?: string;
 };
@@ -41,13 +53,14 @@ export type WPPost = {
   author: number;
   featured_media: number;
   categories: number[];
+  tags?: number[];
   title: { rendered: string };
   excerpt: { rendered: string };
   content: { rendered: string };
   _embedded?: {
     author?: WPAuthor[];
     "wp:featuredmedia"?: WPMedia[];
-    "wp:term"?: WPCategory[][];
+    "wp:term"?: Array<Array<WPCategory | WPTag>>;
   };
 };
 
@@ -124,6 +137,11 @@ export type SiteAd = {
   dataUnit: string;
   sizeClass: string;
   html?: string;
+  google?: {
+    networkCode: string;
+    adUnitCode: string;
+    sizes: Array<[number, number]>;
+  };
 };
 
 type WPAdCode = {
@@ -139,6 +157,7 @@ type GetPostsOptions = {
   perPage?: number;
   page?: number;
   categories?: number | number[];
+  tags?: number | number[];
   exclude?: number | number[];
   search?: string;
   embed?: string | number;
@@ -146,8 +165,43 @@ type GetPostsOptions = {
 
 const revalidate = 3600;
 const wpRequestTimeoutMs = 8000;
+const googleAdNetworkCode = process.env.NEXT_PUBLIC_GOOGLE_AD_NETWORK_CODE ?? "23298734611";
+
+const googleLeaderboardAd = {
+  networkCode: googleAdNetworkCode,
+  adUnitCode: "sahomeschooling_home_leaderboard",
+  sizes: [
+    [300, 250],
+    [728, 90],
+    [970, 250],
+  ] as Array<[number, number]>,
+};
+
+const googleSidebarAd = {
+  networkCode: googleAdNetworkCode,
+  adUnitCode: "newspack-sidebar-1-684ff96a6f547",
+  sizes: [
+    [300, 250],
+    [300, 600],
+  ] as Array<[number, number]>,
+};
+
+const googleSidebarAdAlt = {
+  networkCode: googleAdNetworkCode,
+  adUnitCode: "newspack-sidebar-2-684ff96b922df",
+  sizes: [
+    [300, 250],
+    [300, 600],
+  ] as Array<[number, number]>,
+};
 
 const localMagazineCovers = {
+  "sahab-june-2026": {
+    src: "https://sahomeschooling.com/wp-content/uploads/dflip-thumbs/6869.jpeg?1780466638",
+    alt: "SA Homeschooling & Beyond June 2026 cover",
+    width: 893,
+    height: 1263,
+  },
   "sa-homeschooling-autumn-2024": {
     src: "/magazine-covers/sa-homeschooling-autumn-2024.jpg",
     alt: "SA Homeschooling & Beyond Autumn 2024 cover",
@@ -289,10 +343,11 @@ const localMagazineCovers = {
 } satisfies Record<string, NonNullable<MagazineIssue["coverImage"]>>;
 
 const localMagazineOrder = [
+  "sahab-june-2026",
   "sa-homeschooling-december-2025",
-  "sa-homeschooling-issue-1-2025",
-  "sa-homeschooling-winter-2025",
   "sa-homeschooling-spring-2025",
+  "sa-homeschooling-winter-2025",
+  "sa-homeschooling-issue-1-2025",
   "sa-homeschooling-summer-2024",
   "sa-homeschooling-spring-2024",
   "sa-homeschooling-winter-2024",
@@ -315,61 +370,72 @@ const localMagazineOrder = [
 ] as const;
 
 const localMagazineDescriptions: Record<(typeof localMagazineOrder)[number], string> = {
+  "sahab-june-2026":
+    "The SA Homeschooling & Beyond June 2026 issue brings families fresh guidance, practical education support, and inspiring ideas for learning at home. Explore the latest stories, resources, and expert insight for South African homeschool parents and learners.",
   "sa-homeschooling-december-2025":
-    "SA Homeschooling & Beyond - December 2025 looks ahead to a successful 2026 with practical education tips, support for active learning, autism-friendly options, critical thinking, sleep success, and family wellbeing.",
-  "sa-homeschooling-issue-1-2025":
-    "SA Homeschooling & Beyond - Issue 1, 2025 is a vibrant, family-focused publication that explores the evolving landscape of education in South Africa, with a strong emphasis on homeschooling, alternative learning paths, and youth empowerment.",
-  "sa-homeschooling-winter-2025":
-    "SA Homeschooling & Beyond - Winter 2025 explores parenting in the digital age, the timeless value of classic books, family bonding through cooking, and the beauty of the homeschooling journey.",
+    "The SA Homeschooling December 2025 issue is dedicated to empowering parents for a successful academic year ahead, focusing on essential developmental, educational, and planning topics. The magazine explores critical foundations for learning, featuring articles like “Sleep Your Way to Success,” which highlights how crucial quality sleep is for improving a homeschooler’s memory, emotional regulation, and overall academic performance. Addressing special needs, the cover story asks “What are the Best Educational Options for Autism?” offering insight into the condition and explaining why homeschooling is often the preferred, low-sensory, and flexible choice for many South African families.",
   "sa-homeschooling-spring-2025":
-    "SA Homeschooling & Beyond - Spring 2025 examines AI in education, extra lessons, maths literacy, autism stories, and practical support for families preparing for a new season of learning.",
+    "The Spring 2025 issue of SA Homeschooling and Beyond magazine explores key topics shaping modern homeschooling in South Africa. It discusses the importance of choosing pure mathematics, the growing role of AI in education, and how extra lessons can help close academic gaps. The magazine also features a story of a family homeschooling a child with autism, highlighting resilience and personalized learning. Parents are guided on understanding and managing ADHD in children through practical, expert-backed strategies. Lifestyle content includes a comforting oxtail recipe that turns cooking into a family learning experience.",
+  "sa-homeschooling-winter-2025":
+    "The Winter 2025 edition of SA Homeschooling & Beyond explores parenting in the digital age, the timeless value of classic books, family bonding through cooking, and the beauty of the homeschooling journey. Packed with practical guides, resources, and inspiration, this issue connects homeschooling families with the tools and brands that support their learning and lifestyle.",
+  "sa-homeschooling-issue-1-2025":
+    "SA Homeschooling & Beyond – Issue 1, 2025 is a vibrant, family-focused publication that explores the evolving landscape of education in South Africa, with a strong emphasis on homeschooling, alternative learning paths, and youth empowerment. This spring edition blends practical advice, expert insights, and inspiring stories to support parents, educators, and learners navigating non-traditional schooling",
   "sa-homeschooling-summer-2024":
-    "SA Homeschooling & Beyond - Summer 2024 is a warm, insightful edition for South African families navigating homeschooling, screen time, matric recovery, cooking and bonding, and independent play.",
+    "SA Homeschooling & Beyond – Summer 2024 Edition is a warm, insightful magazine tailored for South African families navigating homeschooling, alternative education, and parenting in a rapidly evolving world. This festive-season issue blends practical guidance with emotional support, creative inspiration, and expert advice to help parents and learners thrive.",
   "sa-homeschooling-spring-2024":
-    "SA Homeschooling & Beyond - Spring 2024 is a thoughtful and empowering resource for South African families navigating education, parenting, connected classrooms, online safety, and future-readiness.",
+    "SA Homeschooling & Beyond – Spring 2024 Edition is a thoughtful and empowering resource for South African families navigating education, parenting, and youth development. This issue leans into emotional well-being, digital literacy, and future-readiness, offering both practical advice and heartfelt perspectives.",
   "sa-homeschooling-winter-2024":
-    "SA Homeschooling & Beyond - Winter 2024 is a rich and reflective guide for families navigating homeschooling, praise, resilience, winter wellbeing, and practical ways to empower children.",
+    "SA Homeschooling & Beyond – Winter 2024 Edition is a rich and reflective guide for South African families navigating homeschooling, parenting, and education during the colder months. This issue leans into emotional resilience, academic strategy, and holistic development, offering practical tools and heartfelt insights for learners and parents alike.",
   "sa-homeschooling-autumn-2024":
-    "SA Homeschooling & Beyond - Autumn 2024 explores confident homeschooling, teen communication, gestalt language processing, online wilderness, and support for children who are not coping.",
+    "SA Homeschooling & Beyond – Autumn 2024 Edition is a rich and reflective magazine designed for South African families exploring homeschooling, alternative education, and youth development. This issue leans into emotional intelligence, academic strategy, and future-readiness, offering practical tools and heartfelt insights for learners and parents alike.",
   "sa-homeschooling-issue-16-summer-2023":
-    "SA Homeschooling & Beyond - Issue 16, Summer 2023 is a lively and insightful edition that blends emotional support, creative inspiration, and future-focused advice for families.",
+    "SA Homeschooling & Beyond – Issue 16, Summer 2023 is a lively and insightful edition that blends practical homeschooling guidance with emotional support, creative inspiration, and future-focused advice for South African families. It’s designed to help parents and learners thrive during the festive season and beyond.",
   "sa-homeschooling-issue-15-spring-2023":
-    "SA Homeschooling & Beyond - Issue 15, Spring 2023 is a vibrant edition that speaks directly to South African homeschooling families navigating exam season, personal growth, and future planning.",
+    "SA Homeschooling & Beyond – Issue 15, Spring 2023 is a vibrant, practical, and emotionally intelligent edition that speaks directly to South African homeschooling families navigating exam season, personal growth, and future planning.",
   "sa-homeschooling-issue-14-winter-2023":
-    "SA Homeschooling & Beyond - Issue 14, Winter 2023 is a rich, emotionally resonant edition that blends practical homeschooling strategies with empowering insights for colder months.",
+    "SA Homeschooling & Beyond – Issue 14, Winter 2023 is a rich, emotionally resonant edition that blends practical homeschooling strategies with empowering insights for parents and learners navigating the colder months.",
   "sa-homeschooling-issue-13-autumn-2023":
-    "SA Homeschooling & Beyond - Issue 13, Autumn 2023 is a heartfelt and practical edition that dives into emotional, cognitive, and logistical aspects of homeschooling through new beginnings and academic challenges.",
+    "SA Homeschooling & Beyond – Issue 13, Autumn 2023 is a heartfelt and practical edition that dives into the emotional, cognitive, and logistical aspects of homeschooling, especially for families navigating new beginnings and academic challenges.",
   "sa-homeschooling-issue-12-summer-2022":
-    "SA Homeschooling & Beyond - Issue 12, Summer 2022 is a vibrant, future-focused edition that celebrates learning styles, entrepreneurial thinking, food awareness, and confident homeschooling.",
+    "SA Homeschooling & Beyond – Issue 12, Summer 2022 is a vibrant, future-focused edition that celebrates the power of homeschooling to nurture confident, curious, and capable learners in South Africa.",
   "sa-homeschooling-issue-11-spring-2022":
-    "SA Homeschooling & Beyond - Issue 11, Spring 2022 is a dynamic, emotionally intelligent edition that blends practical homeschooling advice with creative inspiration, cognitive insights, and family bonding ideas.",
+    "SA Homeschooling & Beyond – Issue 11, Spring 2022 is a dynamic, emotionally intelligent edition that blends practical homeschooling advice with creative inspiration, cognitive insights, and family bonding ideas.",
   "sa-homeschooling-issue-9-2022":
-    "SA Homeschooling & Beyond - Issue 9, 2022 is a foundational edition that speaks directly to South African families exploring homeschooling, online safety, growth mindset, and practical learning support.",
+    "SA Homeschooling & Beyond – Issue 9, 2022 is a foundational edition that speaks directly to South African families exploring the possibilities of homeschooling and alternative education. It’s packed with practical advice, emotional support, and empowering insights for both new and experienced homeschoolers",
   "sa-homeschooling-issue-8-2022":
-    "SA Homeschooling Issue 8 (2022) explores the evolving landscape of education in South Africa, spotlighting flexible learning models, parental empowerment, art, hearing health, and the emotional journey of homeschooling.",
+    "SA Homeschooling Issue 8 (2022) explores the evolving landscape of education in South Africa, spotlighting flexible learning models, parental empowerment, and the emotional journey of homeschooling",
   "sa-homeschooling-issue-7-2021":
-    "SA Homeschooling & Beyond - Issue 7, 2021 is a foundational edition that captures the heart of South Africa's homeschooling movement with home learning spaces, ADHD questions, and music therapy.",
+    "SA Homeschooling & Beyond – Issue 7, 2021 is a foundational edition that captures the heart of South Africa’s homeschooling movement during a time of global educational shifts. It offers practical guidance for new homeschoolers, emotional support for families adjusting to change, and expert insights into learning strategies that work.",
   "sa-homeschooling-issue-6-2021":
-    "SA Homeschooling - Issue 6, 2021 is a vibrant, family-focused edition that celebrates curiosity, creativity, and connection in the homeschooling journey.",
+    "SA Homeschooling – Issue 6, 2021 is a vibrant, family-focused edition that celebrates curiosity, creativity, and connection in the homeschooling journey. With its theme “Living & Learning – Together,” this issue blends practical advice with emotional insight and hands-on activities.",
   "sa-homeschooling-issue-5":
-    "SA Homeschooling - Issue 5 explores Learning Through Life, highlighting how everyday experiences - from gardening to storytelling - can become powerful educational moments.",
+    "SA Homeschooling – Issue 5, 2021 explores the theme of “Learning Through Life,” highlighting how everyday experiences—from gardening to storytelling—can become powerful educational moments.",
   "sa-homeschooling-issue-4-2021":
-    "SA Homeschooling - Issue 4, 2021 is a rich and practical edition themed around Living & Learning - Together, offering families tools to future-proof their teens, nurture cognitive development, and stay grounded through seasonal shifts.",
+    "SA Homeschooling – Issue 4, 2021 is a rich and practical edition themed around “Living & Learning – Together,” offering families tools to future-proof their teens, nurture cognitive development, and stay grounded through seasonal shifts.",
   "sa-homeschooling-issue-3-2021":
-    "SA Homeschooling - Issue 3, 2021 dives into Learning Through Life, celebrating how everyday experiences - from baking to budgeting - can become powerful educational tools.",
+    "A Homeschooling – Issue 3, 2021 dives into the theme of “Learning Through Life,” celebrating how everyday experiences—from baking to budgeting—can become powerful educational tools.",
   "sa-homeschooling-issue-2-2021":
-    "SA Homeschooling - Issue 2, 2021 is a dynamic and emotionally resonant edition that blends practical tools with heartfelt stories to support families navigating homeschooling during uncertain times.",
+    "SA Homeschooling – Issue 2, 2021 is a dynamic and emotionally resonant edition that blends practical tools with heartfelt stories to support families navigating homeschooling during uncertain times.",
   "sa-homeschooling-issue-1":
-    "SA Homeschooling - Issue 1 marks the beginning of a heartfelt and practical journey into alternative education in South Africa, introducing core homeschooling principles, family stories, and curriculum choices.",
+    "SA Homeschooling – Issue 1 marks the beginning of a heartfelt and practical journey into alternative education in South Africa. This debut edition introduces core homeschooling principles, shares real-life stories from families, and offers expert insights into learning styles, emotional development, and curriculum choices. It sets the tone for a community-driven, values-based approach to education—where curiosity, connection, and flexibility lead the way.",
+};
+
+const localMagazineTitles: Partial<Record<(typeof localMagazineOrder)[number], string>> = {
+  "sahab-june-2026": "SA Homeschooling & Beyond June 2026",
+  "sa-homeschooling-issue-5": "SA Homeschooling Issue 5 2021",
+};
+
+const localMagazinePdfUrls: Partial<Record<(typeof localMagazineOrder)[number], string>> = {
+  "sahab-june-2026": "https://sahomeschooling.com/wp-content/uploads/2026/06/SAHAB_June-2026_Web_300dpi_Rasterized.pdf",
 };
 
 const localMagazineIssues: MagazineIssue[] = localMagazineOrder.map((slug) => ({
   id: slug,
   slug,
-  title: titleFromSlug(slug),
+  title: localMagazineTitles[slug] ?? titleFromSlug(slug),
   issueNumber: extractIssueNumber(slug),
   description: localMagazineDescriptions[slug],
-  pdfUrl: `/magazines/${slug}.pdf`,
+  pdfUrl: localMagazinePdfUrls[slug] ?? `/magazines/${slug}.pdf`,
   embedUrl: `/magazines/embed/${slug}`,
   coverImage: localMagazineCovers[slug],
 }));
@@ -468,73 +534,245 @@ const categoryAliases: Record<string, string> = {
   "cooking-bonding": "cooking-and-bonding",
 };
 
+const fallbackCategories: Record<string, WPCategory> = {
+  education: {
+    id: 9001,
+    count: 8,
+    name: "Education",
+    slug: "education",
+    taxonomy: "category",
+    description: "Education stories and guides",
+    link: "/category/education",
+  },
+  parenting: {
+    id: 9002,
+    count: 4,
+    name: "Parenting",
+    slug: "parenting",
+    taxonomy: "category",
+    description: "Parenting stories and support",
+    link: "/category/parenting",
+  },
+  development: {
+    id: 9003,
+    count: 4,
+    name: "Development",
+    slug: "development",
+    taxonomy: "category",
+    description: "Development stories and guides",
+    link: "/category/development",
+  },
+  "cooking-bonding": {
+    id: 9004,
+    count: 3,
+    name: "Cooking & Bonding",
+    slug: "cooking-bonding",
+    taxonomy: "category",
+    description: "Cooking and bonding stories",
+    link: "/category/cooking-bonding",
+  },
+  "ask-dalena": {
+    id: 9005,
+    count: 2,
+    name: "Ask Dalena",
+    slug: "ask-dalena",
+    taxonomy: "category",
+    description: "Practical learning support answers",
+    link: "/category/ask-dalena",
+  },
+};
+
+const fallbackAuthor: WPAuthor = {
+  id: 9001,
+  name: "SA Homeschooling",
+  slug: "sa-homeschooling",
+  description: "SA Homeschooling contributor.",
+};
+
+type FallbackPostSeed = {
+  title: string;
+  slug: string;
+  excerpt: string;
+  category: keyof typeof fallbackCategories;
+  image: (typeof magazineFallbackCovers)[number];
+  date: string;
+};
+
+const fallbackPostSeeds: FallbackPostSeed[] = [
+  {
+    title: "Homeschool Planning In South Africa For 2026",
+    slug: "homeschool-planning-in-sa-2026",
+    excerpt: "Build a steady homeschool year with practical planning, realistic rhythms, and space for your child's pace.",
+    category: "education",
+    image: magazineFallbackCovers[9],
+    date: "2026-06-24T08:00:00+02:00",
+  },
+  {
+    title: "Create A Homeschool Routine That Actually Works",
+    slug: "create-homeschool-routine-south-africa",
+    excerpt: "A flexible routine can bring calm to learning days without turning home education into a rigid timetable.",
+    category: "education",
+    image: magazineFallbackCovers[0],
+    date: "2026-06-20T08:00:00+02:00",
+  },
+  {
+    title: "Online Schools In South Africa: What Families Should Compare",
+    slug: "online-schools-south-africa",
+    excerpt: "Compare structure, support, assessment paths, and costs before choosing an online learning provider.",
+    category: "education",
+    image: magazineFallbackCovers[1],
+    date: "2026-06-17T08:00:00+02:00",
+  },
+  {
+    title: "Supporting A Child With Learning Differences At Home",
+    slug: "learning-disabilities-south-africa-homeschool-guide",
+    excerpt: "Small adaptations can make reading, writing, and concentration easier for learners who need extra support.",
+    category: "development",
+    image: magazineFallbackCovers[7],
+    date: "2026-06-14T08:00:00+02:00",
+  },
+  {
+    title: "Future-Ready Skills For Homeschool Learners",
+    slug: "future-ready-skills-homeschooling-south-africa",
+    excerpt: "Communication, curiosity, and problem solving belong beside academic work in a future-focused education.",
+    category: "education",
+    image: magazineFallbackCovers[10],
+    date: "2026-06-11T08:00:00+02:00",
+  },
+  {
+    title: "Helping Children Build Confidence Before Big School",
+    slug: "big-school-confidence",
+    excerpt: "Confidence grows through gentle preparation, predictable routines, and chances to practise independence.",
+    category: "parenting",
+    image: magazineFallbackCovers[8],
+    date: "2026-06-08T08:00:00+02:00",
+  },
+  {
+    title: "Practical Study Space Ideas For Homeschool Teens",
+    slug: "create-homeschool-study-space-tips-for-teens",
+    excerpt: "A thoughtful study corner can reduce friction and make independent work easier to begin.",
+    category: "education",
+    image: magazineFallbackCovers[3],
+    date: "2026-06-04T08:00:00+02:00",
+  },
+  {
+    title: "Executive Function Skills For Children",
+    slug: "executive-function-skills-for-children-guide",
+    excerpt: "Planning, working memory, and self-monitoring can be taught through everyday homeschool routines.",
+    category: "development",
+    image: magazineFallbackCovers[2],
+    date: "2026-05-30T08:00:00+02:00",
+  },
+  {
+    title: "Classic Books For A Rich Homeschool Reading List",
+    slug: "classic-books-for-children-homeschool-list",
+    excerpt: "A balanced reading list helps children meet memorable stories, strong language, and new ideas.",
+    category: "education",
+    image: magazineFallbackCovers[4],
+    date: "2026-05-26T08:00:00+02:00",
+  },
+  {
+    title: "Healthy Lunch Ideas For Busy Homeschool Days",
+    slug: "healthy-lunch-ideas-kids-tuna-mango-salad",
+    excerpt: "Simple meals keep the day moving and can invite children into practical kitchen learning.",
+    category: "cooking-bonding",
+    image: {
+      src: "/images/recipe-smoothie.jpg",
+      alt: "Fresh homeschool lunch and smoothie ingredients",
+      width: 1200,
+      height: 800,
+      keywords: ["recipe", "lunch", "food"],
+    },
+    date: "2026-05-21T08:00:00+02:00",
+  },
+  {
+    title: "Managing Exam Stress With Calm Habits",
+    slug: "exam-stress-management-sa-student-tips",
+    excerpt: "Preparation, sleep, movement, and encouragement can help learners approach exams with steadier nerves.",
+    category: "development",
+    image: magazineFallbackCovers[5],
+    date: "2026-05-17T08:00:00+02:00",
+  },
+  {
+    title: "Financial Literacy For Young Homeschoolers",
+    slug: "financial-literacy-for-kids-sa-homeschooling",
+    excerpt: "Money conversations can become practical lessons in planning, responsibility, and long-term thinking.",
+    category: "parenting",
+    image: magazineFallbackCovers[6],
+    date: "2026-05-12T08:00:00+02:00",
+  },
+];
+
 const fallbackAds: Record<AdPlacement, SiteAd> = {
   "home-top": {
     id: "ad-home-above-menu",
     placement: "home-top",
     dataUnit: "newspack_home_above_menu",
     sizeClass: "google-ad-slot--leaderboard",
+    google: googleLeaderboardAd,
   },
   "home-middle": {
     id: "ad-after-hero",
     placement: "home-middle",
     dataUnit: "newspack_after_hero",
     sizeClass: "google-ad-slot--leaderboard",
+    google: googleLeaderboardAd,
   },
   "home-bottom": {
     id: "ad-footer-wide",
     placement: "home-bottom",
     dataUnit: "newspack_home_footer",
     sizeClass: "google-ad-slot--leaderboard",
+    google: googleLeaderboardAd,
   },
   "article-top": {
     id: "ad-article-top",
     placement: "article-top",
     dataUnit: "newspack_article_top",
     sizeClass: "google-ad-slot--leaderboard-sm",
+    google: googleLeaderboardAd,
   },
   "article-inline": {
     id: "ad-article-inline",
     placement: "article-inline",
     dataUnit: "newspack_article_inline",
     sizeClass: "google-ad-slot--leaderboard",
+    google: googleLeaderboardAd,
   },
   "article-sidebar": {
     id: "ad-article-sidebar",
     placement: "article-sidebar",
     dataUnit: "newspack_article_sidebar",
     sizeClass: "google-ad-slot--medium-rect",
+    google: googleSidebarAd,
   },
   "category-top": {
     id: "ad-category-top",
     placement: "category-top",
     dataUnit: "newspack_education_top",
     sizeClass: "google-ad-slot--leaderboard-sm",
+    google: googleLeaderboardAd,
   },
   "magazine-top": {
     id: "ad-magazines-bottom",
     placement: "magazine-top",
     dataUnit: "newspack_magazines_bottom",
     sizeClass: "google-ad-slot--leaderboard",
+    google: googleLeaderboardAd,
   },
   "directory-top": {
     id: "ad-directory-sidebar",
     placement: "directory-top",
     dataUnit: "newspack_directory_sidebar",
     sizeClass: "google-ad-slot--directory-rect",
-    html: `
-      <div class="directory-ad-placeholder">
-        <span>Advertisement</span>
-        <strong>Reach homeschool families</strong>
-        <p>Showcase your learning resources, services, or events to South African parents.</p>
-      </div>
-    `,
+    google: googleSidebarAdAlt,
   },
   "subscribe-bottom": {
     id: "ad-newsletter-leaderboard",
     placement: "subscribe-bottom",
     dataUnit: "newspack_newsletter_footer",
     sizeClass: "google-ad-slot--leaderboard",
+    google: googleLeaderboardAd,
   },
 };
 
@@ -547,6 +785,14 @@ function normalizeCategory(category: WPCategory): WPCategory {
     ...category,
     name: decodeHtml(category.name),
     description: stripHtml(category.description ?? ""),
+  };
+}
+
+function normalizeTag(tag: WPTag): WPTag {
+  return {
+    ...tag,
+    name: decodeHtml(tag.name),
+    description: stripHtml(tag.description ?? ""),
   };
 }
 
@@ -606,11 +852,268 @@ const fetchWordPressPaginated = unstable_cache(
   { revalidate },
 );
 
-function emptyPaginatedPosts(): PaginatedPosts {
+function createFallbackPost(seed: FallbackPostSeed, index: number): WPPost {
+  const category = fallbackCategories[seed.category];
+
   return {
-    posts: [],
-    total: 0,
-    totalPages: 0,
+    id: 9100 + index,
+    date: seed.date,
+    modified: seed.date,
+    slug: seed.slug,
+    link: `/articles/${seed.slug}`,
+    author: fallbackAuthor.id,
+    featured_media: 9200 + index,
+    categories: [category.id],
+    tags: [],
+    title: { rendered: seed.title },
+    excerpt: { rendered: `<p>${seed.excerpt}</p>` },
+    content: { rendered: `<p>${seed.excerpt}</p>` },
+    _embedded: {
+      author: [fallbackAuthor],
+      "wp:featuredmedia": [
+        {
+          id: 9200 + index,
+          source_url: seed.image.src,
+          alt_text: seed.image.alt,
+          media_details: {
+            width: seed.image.width,
+            height: seed.image.height,
+            sizes: {
+              large: {
+                source_url: seed.image.src,
+                width: seed.image.width,
+                height: seed.image.height,
+              },
+            },
+          },
+        },
+      ],
+      "wp:term": [[category], []],
+    },
+  };
+}
+
+function fallbackImageForPost(post: WPPost, index: number) {
+  const terms = post._embedded?.["wp:term"]?.flat() ?? [];
+  const haystack = `${post.slug} ${post.title.rendered} ${post.excerpt.rendered} ${terms
+    .map((term) => `${term.name} ${term.slug}`)
+    .join(" ")}`
+    .replace(/<[^>]*>/g, " ")
+    .toLowerCase();
+
+  if (haystack.includes("ask dalena") || haystack.includes("ask-dalena") || haystack.includes("newspack-ask-dalena")) {
+    if (haystack.includes("adhd")) return magazineFallbackCovers[8];
+    if (haystack.includes("dyslexia")) return magazineFallbackCovers[3];
+    if (haystack.includes("auditory")) return magazineFallbackCovers[7];
+    if (haystack.includes("motivat") || haystack.includes("unmotivated")) return magazineFallbackCovers[10];
+    if (haystack.includes("mother tongue") || haystack.includes("bilingual")) return magazineFallbackCovers[4];
+    if (haystack.includes("workload") || haystack.includes("schoolwork")) return magazineFallbackCovers[2];
+    if (haystack.includes("study space")) return magazineFallbackCovers[9];
+    if (haystack.includes("focus") || haystack.includes("concentration")) return magazineFallbackCovers[5];
+    if (haystack.includes("technology") || haystack.includes("self-directed")) return magazineFallbackCovers[5];
+
+    const askDalenaImages = [
+      magazineFallbackCovers[7],
+      magazineFallbackCovers[5],
+      magazineFallbackCovers[4],
+      magazineFallbackCovers[8],
+      magazineFallbackCovers[9],
+      magazineFallbackCovers[3],
+      magazineFallbackCovers[10],
+      magazineFallbackCovers[2],
+    ];
+
+    return askDalenaImages[index % askDalenaImages.length];
+  }
+
+  if (haystack.includes("online-schools-in-south-africa")) return magazineFallbackCovers[1];
+  if (haystack.includes("preparing-for-june-matric-exams")) return magazineFallbackCovers[5];
+  if (haystack.includes("homeschooling-in-south-africa-eduxplore")) return magazineFallbackCovers[8];
+  if (haystack.includes("online-school-to-tertiary")) return magazineFallbackCovers[10];
+  if (haystack.includes("maths-vs-maths-literacy")) return magazineFallbackCovers[6];
+  if (haystack.includes("homeschooling-for-beginners")) return magazineFallbackCovers[0];
+  if (haystack.includes("options-after-matric")) return magazineFallbackCovers[4];
+  if (haystack.includes("foundations-for-academic-success")) return magazineFallbackCovers[9];
+  if (haystack.includes("microlearning-strategies")) return magazineFallbackCovers[2];
+  if (haystack.includes("holistic-school-readiness")) return magazineFallbackCovers[8];
+  if (haystack.includes("boost-childs-academic-performance")) return magazineFallbackCovers[7];
+  if (haystack.includes("ai-education-technology")) return magazineFallbackCovers[3];
+
+  if (haystack.includes("online school") || haystack.includes("online schooling") || haystack.includes("online-school")) {
+    return magazineFallbackCovers[1];
+  }
+
+  if (haystack.includes("maths") || haystack.includes("mathematics")) {
+    return magazineFallbackCovers[6];
+  }
+
+  if (haystack.includes("matric") || haystack.includes("exam")) {
+    return index % 2 === 0 ? magazineFallbackCovers[5] : magazineFallbackCovers[9];
+  }
+
+  if (haystack.includes("career") || haystack.includes("tertiary") || haystack.includes("data management")) {
+    return magazineFallbackCovers[8];
+  }
+
+  if (haystack.includes("books") || haystack.includes("reading") || haystack.includes("library")) {
+    return magazineFallbackCovers[4];
+  }
+
+  if (haystack.includes("readiness") || haystack.includes("big school") || haystack.includes("classroom")) {
+    return magazineFallbackCovers[8];
+  }
+
+  if (haystack.includes("academic performance") || haystack.includes("support") || haystack.includes("tutor")) {
+    return magazineFallbackCovers[7];
+  }
+
+  if (haystack.includes("microlearning") || haystack.includes("technology") || haystack.includes("ai ")) {
+    return magazineFallbackCovers[1];
+  }
+
+  if (haystack.includes("beginners") || haystack.includes("new homeschool")) {
+    return magazineFallbackCovers[11];
+  }
+
+  if (haystack.includes("curriculum") || haystack.includes("planning")) {
+    return magazineFallbackCovers[9];
+  }
+
+  if (haystack.includes("education") || haystack.includes("newspack-featured")) {
+    const educationImages = [
+      magazineFallbackCovers[1],
+      magazineFallbackCovers[5],
+      magazineFallbackCovers[8],
+      magazineFallbackCovers[6],
+      magazineFallbackCovers[11],
+      magazineFallbackCovers[4],
+      magazineFallbackCovers[9],
+      magazineFallbackCovers[3],
+      magazineFallbackCovers[7],
+      magazineFallbackCovers[2],
+      magazineFallbackCovers[10],
+      magazineFallbackCovers[0],
+    ];
+
+    return educationImages[index % educationImages.length];
+  }
+
+  const match = magazineFallbackCovers
+    .slice(1)
+    .find((cover) => cover.keywords.some((keyword) => haystack.includes(keyword)));
+
+  return match ?? magazineFallbackCovers[(index * 5) % magazineFallbackCovers.length];
+}
+
+function localizeFallbackPostImage(post: WPPost, index: number): WPPost {
+  const image = fallbackImageForPost(post, index);
+  const existingMedia = post._embedded?.["wp:featuredmedia"]?.[0];
+
+  return {
+    ...post,
+    _embedded: {
+      ...post._embedded,
+      "wp:featuredmedia": [
+        {
+          id: existingMedia?.id ?? post.featured_media ?? 9200 + index,
+          source_url: image.src,
+          alt_text: existingMedia?.alt_text || image.alt,
+          media_details: {
+            width: image.width,
+            height: image.height,
+            sizes: {
+              thumbnail: {
+                source_url: image.src,
+                width: image.width,
+                height: image.height,
+              },
+              medium: {
+                source_url: image.src,
+                width: image.width,
+                height: image.height,
+              },
+              medium_large: {
+                source_url: image.src,
+                width: image.width,
+                height: image.height,
+              },
+              large: {
+                source_url: image.src,
+                width: image.width,
+                height: image.height,
+              },
+              full: {
+                source_url: image.src,
+                width: image.width,
+                height: image.height,
+              },
+            },
+          },
+        },
+      ],
+    },
+  };
+}
+
+const exportedFallbackPosts = (fallbackPostsData as unknown as WPPost[]).map(localizeFallbackPostImage);
+const fallbackPosts: WPPost[] = exportedFallbackPosts.length
+  ? exportedFallbackPosts
+  : fallbackPostSeeds.map((seed, index) => createFallbackPost(seed, index));
+
+function getFallbackCategory(slug: string) {
+  const canonicalSlug = Object.entries(categoryAliases).find(([, alias]) => alias === slug)?.[0] ?? slug;
+  const resolvedSlug = categoryAliases[canonicalSlug] ?? slug;
+  const displayCategory = fallbackCategories[canonicalSlug] ?? fallbackCategories[slug];
+  const matchedCategory = fallbackPosts
+    .flatMap((post) => getPostCategories(post))
+    .find((category) => category.slug === slug || category.slug === resolvedSlug || category.slug === canonicalSlug);
+
+  if (matchedCategory) {
+    return {
+      ...matchedCategory,
+      slug: canonicalSlug,
+      name: displayCategory?.name ?? matchedCategory.name,
+      description: displayCategory?.description ?? matchedCategory.description,
+      link: displayCategory?.link ?? matchedCategory.link,
+    };
+  }
+
+  return displayCategory ?? null;
+}
+
+function getFallbackPosts(options: GetPostsOptions = {}) {
+  const excludedIds = new Set(Array.isArray(options.exclude) ? options.exclude : options.exclude ? [options.exclude] : []);
+  const categoryIds = new Set(Array.isArray(options.categories) ? options.categories : options.categories ? [options.categories] : []);
+  const tagIds = new Set(Array.isArray(options.tags) ? options.tags : options.tags ? [options.tags] : []);
+  const search = options.search?.trim().toLowerCase();
+  const page = Math.max(options.page ?? 1, 1);
+  const perPage = options.perPage ?? 10;
+
+  const filteredPosts = fallbackPosts.filter((post) => {
+    if (excludedIds.has(post.id)) return false;
+    if (categoryIds.size && !post.categories.some((categoryId) => categoryIds.has(categoryId))) return false;
+    if (tagIds.size && !post.tags?.some((tagId) => tagIds.has(tagId))) return false;
+
+    if (search) {
+      const haystack = `${getPostTitle(post)} ${getPostExcerpt(post)} ${post.slug}`.toLowerCase();
+      if (!haystack.includes(search)) return false;
+    }
+
+    return true;
+  });
+
+  return filteredPosts.slice((page - 1) * perPage, page * perPage);
+}
+
+function getFallbackPaginatedPosts(options: GetPostsOptions = {}): PaginatedPosts {
+  const page = Math.max(options.page ?? 1, 1);
+  const perPage = options.perPage ?? 10;
+  const allMatchingPosts = getFallbackPosts({ ...options, page: 1, perPage: fallbackPosts.length });
+
+  return {
+    posts: allMatchingPosts.slice((page - 1) * perPage, page * perPage),
+    total: allMatchingPosts.length,
+    totalPages: Math.max(Math.ceil(allMatchingPosts.length / perPage), 1),
   };
 }
 
@@ -648,12 +1151,13 @@ export async function getPosts(options: GetPostsOptions = {}) {
       per_page: options.perPage ?? 10,
       page: options.page ?? 1,
       categories: listParam(options.categories),
+      tags: listParam(options.tags),
       exclude: listParam(options.exclude),
       search: options.search,
     });
   } catch (error) {
     logWordPressError("getPosts failed", error);
-    return [];
+    return getFallbackPosts(options);
   }
 }
 
@@ -664,12 +1168,13 @@ export async function getPaginatedPosts(options: GetPostsOptions = {}) {
       per_page: options.perPage ?? 10,
       page: options.page ?? 1,
       categories: listParam(options.categories),
+      tags: listParam(options.tags),
       exclude: listParam(options.exclude),
       search: options.search,
     });
   } catch (error) {
     logWordPressError("getPaginatedPosts failed", error);
-    return emptyPaginatedPosts();
+    return getFallbackPaginatedPosts(options);
   }
 }
 
@@ -684,7 +1189,7 @@ export async function getPostBySlug(slug: string) {
     return posts[0] ?? null;
   } catch (error) {
     logWordPressError(`getPostBySlug failed for "${slug}"`, error);
-    return null;
+    return fallbackPosts.find((post) => post.slug === slug) ?? null;
   }
 }
 
@@ -699,7 +1204,9 @@ export async function getCategories() {
     return categories.map(normalizeCategory);
   } catch (error) {
     logWordPressError("getCategories failed", error);
-    return [];
+    return Array.from(
+      new Map(fallbackPosts.flatMap((post) => getPostCategories(post)).map((category) => [category.id, category])).values(),
+    );
   }
 }
 
@@ -713,7 +1220,7 @@ export async function getCategoryBySlug(slug: string) {
     return categories[0] ? normalizeCategory(categories[0]) : null;
   } catch (error) {
     logWordPressError(`getCategoryBySlug failed for "${slug}"`, error);
-    return null;
+    return getFallbackCategory(slug);
   }
 }
 
@@ -731,6 +1238,51 @@ export async function getPostsByCategory(slug: string, page = 1, perPage = 9) {
   });
 
   return { category, ...result };
+}
+
+export async function getTags() {
+  try {
+    const tags = await wpFetch<WPTag[]>("/wp/v2/tags", {
+      per_page: 100,
+      orderby: "count",
+      order: "desc",
+    });
+
+    return tags.map(normalizeTag);
+  } catch (error) {
+    logWordPressError("getTags failed", error);
+    return [];
+  }
+}
+
+export async function getTagBySlug(slug: string) {
+  try {
+    const tags = await wpFetch<WPTag[]>("/wp/v2/tags", {
+      slug: encodeURIComponent(slug),
+      per_page: 1,
+    });
+
+    return tags[0] ? normalizeTag(tags[0]) : null;
+  } catch (error) {
+    logWordPressError(`getTagBySlug failed for "${slug}"`, error);
+    return null;
+  }
+}
+
+export async function getPostsByTag(slug: string, page = 1, perPage = 9) {
+  const tag = await getTagBySlug(slug);
+
+  if (!tag) {
+    return { tag: null, posts: [], total: 0, totalPages: 0 };
+  }
+
+  const result = await getPaginatedPosts({
+    tags: tag.id,
+    page,
+    perPage,
+  });
+
+  return { tag, ...result };
 }
 
 export async function getAuthors() {
@@ -870,11 +1422,25 @@ export function getPostAuthorProfile(post: WPPost) {
 }
 
 export function getPostCategories(post: WPPost) {
-  return (post._embedded?.["wp:term"]?.[0] ?? []).map(normalizeCategory);
+  const terms = post._embedded?.["wp:term"] ?? [];
+  const categories = terms.flat().filter((term): term is WPCategory => term.taxonomy === "category");
+
+  if (categories.length) return categories.map(normalizeCategory);
+
+  return (terms[0] ?? []).map((term) => normalizeCategory(term as WPCategory));
 }
 
 export function getPrimaryCategory(post: WPPost) {
   return getPostCategories(post)[0]?.name ?? "SA Homeschooling";
+}
+
+export function getPostTags(post: WPPost) {
+  const terms = post._embedded?.["wp:term"] ?? [];
+  const embeddedTags = terms.flat().filter((term): term is WPTag => term.taxonomy === "post_tag");
+
+  if (embeddedTags.length) return embeddedTags.map(normalizeTag);
+
+  return (terms[1] ?? []).map((term) => normalizeTag(term as WPTag));
 }
 
 export function getFeaturedImage(post: WPPost) {
